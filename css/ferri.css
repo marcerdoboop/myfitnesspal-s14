@@ -1,0 +1,288 @@
+/* =====================================================================
+   FERRI · Estilos del asistente conversacional (Semana 14)
+   Movimiento según emilkowalski/skills (emil-design-eng, animate,
+   mobile-native):
+   - Solo se animan transform y opacity (corren en la GPU).
+   - Entradas con ease-out fuerte; salidas más rápidas que entradas.
+   - Transiciones (interrumpibles) en vez de keyframes para abrir/cerrar.
+   - El panel crece desde el botón que lo abre (transform-origin).
+   - Botones con :active scale(.97); hover solo con mouse real.
+   - prefers-reduced-motion: solo opacidad, sin desplazamientos.
+   ===================================================================== */
+.ferri {
+  --f-verde: #1e7a3a;
+  --f-verde-osc: #14301f;
+  --f-fondo: #f4f7f5;
+  --f-borde: #c5d3c9;
+  --f-texto: #1f2933;
+  --f-suave: #5b6b61;
+  --f-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --f-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  font-family: inherit;
+  color: var(--f-texto);
+}
+.ferri *, .ferri *::before, .ferri *::after { box-sizing: border-box; }
+.ferri button { font: inherit; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.ferri svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+.ferri-solo-lector { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Botón flotante ---------- */
+.ferri-lanzador {
+  position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 200;
+  display: inline-flex; align-items: center; gap: .6rem;
+  padding: .45rem 1.1rem .45rem .45rem; border: 0; border-radius: 999px;
+  background: var(--f-verde-osc); color: #fff; font-weight: bold; cursor: pointer;
+  box-shadow: 0 1px 2px rgb(20 48 31 / .2), 0 8px 24px rgb(20 48 31 / .28);
+  transition: transform 160ms var(--f-ease-out), opacity 200ms var(--f-ease-out);
+  user-select: none; -webkit-user-select: none;
+}
+.ferri-lanzador:active { transform: scale(.97); }
+.ferri-lanzador:focus-visible { outline: 3px solid #263238; outline-offset: 4px; }
+.ferri-punto {
+  position: absolute; top: 2px; left: 34px; width: 12px; height: 12px; border-radius: 50%;
+  background: #f2b705; box-shadow: 0 0 0 2px var(--f-verde-osc);
+}
+.ferri-punto[hidden] { display: none; }
+/* Mientras el panel está abierto, el botón se retira (no compite con el chat) */
+.ferri-abierto .ferri-lanzador { opacity: 0; transform: scale(.9); pointer-events: none; }
+
+/* Avatar: "Fe" es el símbolo químico del hierro */
+.ferri-avatar {
+  display: inline-grid; place-items: center; width: 38px; height: 38px; flex: none; border-radius: 50%;
+  background: linear-gradient(145deg, #2f9e55, #1e7a3a 60%, #145a2a); color: #fff;
+  font-family: Georgia, serif; font-size: 1rem; letter-spacing: -.02em;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / .18);
+}
+.ferri-mini { display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; margin-right: .35rem; border-radius: 50%; background: #fff; color: var(--f-verde, #1e7a3a); font-family: Georgia, serif; font-size: .85em; vertical-align: -.2em; }
+
+/* ---------- Panel ---------- */
+.ferri-panel {
+  position: fixed; z-index: 210;
+  right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom));
+  width: min(400px, calc(100vw - 32px)); height: min(640px, calc(100dvh - 32px));
+  display: flex; flex-direction: column; overflow: hidden;
+  background: #fff; border-radius: 18px;
+  box-shadow: 0 0 0 1px rgb(20 48 31 / .08), 0 12px 32px rgb(20 48 31 / .18), 0 32px 64px rgb(20 48 31 / .12);
+  /* Crece desde el botón (esquina inferior derecha) */
+  transform-origin: bottom right;
+  opacity: 0; transform: translateY(8px) scale(.96);
+  /* Salida rápida */
+  transition: opacity 150ms var(--f-ease-out), transform 180ms var(--f-ease-out);
+}
+.ferri-panel[hidden] { display: none; }
+.ferri-panel[data-estado="abierto"] {
+  opacity: 1; transform: none;
+  /* Entrada un poco más lenta que la salida */
+  transition: opacity 200ms var(--f-ease-out), transform 260ms var(--f-ease-out);
+}
+.ferri-panel:focus { outline: none; }
+
+.ferri-cabecera { display: flex; align-items: center; gap: .65rem; padding: .8rem .7rem .8rem 1rem; background: var(--f-verde-osc); color: #fff; }
+.ferri-identidad { flex: 1; min-width: 0; }
+.ferri-identidad h2 { margin: 0; font-family: Georgia, serif; font-weight: normal; font-size: 1.2rem; letter-spacing: -.01em; color: #fff; line-height: 1.2; }
+.ferri-identidad p { margin: 0; font-size: .8rem; opacity: .82; line-height: 1.3; }
+
+.ferri-icono {
+  display: inline-grid; place-items: center; width: 40px; height: 40px; flex: none;
+  border: 0; border-radius: 10px; background: transparent; color: inherit; cursor: pointer;
+  transition: transform 140ms var(--f-ease-out), background-color 150ms ease;
+}
+.ferri-icono:active { transform: scale(.94); }
+.ferri-icono:focus-visible { outline: 2px solid currentColor; outline-offset: 1px; }
+.ferri-icono[aria-pressed="true"] { background: rgb(255 255 255 / .18); }
+.ferri-icono[aria-pressed="false"] .ferri-ondas { opacity: .35; }
+.ferri-icono:disabled { opacity: .35; cursor: not-allowed; }
+
+/* ---------- Contexto (transparencia: qué datos usa Ferri) ---------- */
+.ferri-contexto { display: flex; align-items: center; gap: .6rem; padding: .55rem 1rem; background: #eef3ef; border-bottom: 1px solid var(--f-borde); font-size: .85rem; line-height: 1.35; }
+.ferri-contexto[hidden] { display: none; }
+.ferri-contexto p { margin: 0; flex: 1; min-width: 0; }
+.ferri-contexto-semaforo { width: 12px; height: 12px; border-radius: 50%; flex: none; background: #5f7a68; }
+.ferri-contexto[data-color="verde"] .ferri-contexto-semaforo { background: #1e7a3a; }
+.ferri-contexto[data-color="amarillo"] .ferri-contexto-semaforo { background: #d19a07; }
+.ferri-contexto[data-color="rojo"] .ferri-contexto-semaforo { background: #b3261e; }
+.ferri-contexto-editar { font-weight: bold; color: var(--f-verde); white-space: nowrap; padding: .25rem 0; }
+
+/* ---------- Mensajes ---------- */
+.ferri-mensajes {
+  flex: 1; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  padding: 1rem .9rem .5rem; display: flex; flex-direction: column; gap: .6rem; background: var(--f-fondo);
+}
+.ferri-mensajes:focus-visible { outline: 2px solid var(--f-verde); outline-offset: -2px; }
+.ferri-msj { display: flex; }
+.ferri-msj-usuario { justify-content: flex-end; }
+.ferri-burbuja { max-width: 88%; padding: .65rem .85rem; border-radius: 16px; font-size: .95rem; line-height: 1.5; overflow-wrap: anywhere; }
+.ferri-msj-bot .ferri-burbuja { background: #fff; border-bottom-left-radius: 6px; box-shadow: 0 0 0 1px rgb(20 48 31 / .08), 0 1px 2px rgb(20 48 31 / .06); }
+.ferri-msj-usuario .ferri-burbuja { background: var(--f-verde); color: #fff; border-bottom-right-radius: 6px; }
+.ferri-msj-urgente .ferri-burbuja { background: #fdeceb; box-shadow: 0 0 0 1px #e8b4b0; }
+.ferri-burbuja p { margin: 0 0 .45rem; }
+.ferri-burbuja p:last-of-type { margin-bottom: 0; }
+.ferri-burbuja ul { margin: .4rem 0 0; padding-left: 1.15rem; }
+.ferri-burbuja li { margin-bottom: .3rem; }
+.ferri-por-voz { display: block; margin-top: .2rem; font-size: .72rem; opacity: .8; }
+
+/* Entrada de cada mensaje: sube 6px y aparece (CSS @starting-style, sin JS) */
+.ferri-msj {
+  transition: opacity 220ms var(--f-ease-out), transform 260ms var(--f-ease-out);
+}
+@starting-style {
+  .ferri-msj { opacity: 0; transform: translateY(6px); }
+}
+.ferri-msj.sin-animacion { transition: none; }
+
+.ferri-acciones { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+.ferri-accion {
+  padding: .5rem .8rem; border: 0; border-radius: 10px; background: var(--f-verde); color: #fff; font-weight: bold; font-size: .88rem; cursor: pointer;
+  transition: transform 140ms var(--f-ease-out), background-color 150ms ease;
+}
+.ferri-accion:active { transform: scale(.97); }
+
+.ferri-meta { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; margin-top: .55rem; padding-top: .45rem; border-top: 1px solid #e6ece8; font-size: .78rem; color: var(--f-suave); }
+.ferri-meta details { flex: 1; min-width: 0; }
+.ferri-meta summary { cursor: pointer; padding: .1rem 0; color: var(--f-verde); font-weight: bold; list-style: none; }
+.ferri-meta summary::-webkit-details-marker { display: none; }
+.ferri-meta summary::before { content: "ⓘ "; }
+.ferri-meta details p { margin: .3rem 0 0; }
+.ferri-votos { display: inline-flex; gap: .15rem; flex: none; }
+.ferri-voto {
+  width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; font-size: .9rem; filter: grayscale(1); opacity: .55;
+  transition: transform 140ms var(--f-ease-out), opacity 150ms ease, filter 150ms ease;
+}
+.ferri-voto:active { transform: scale(.9); }
+.ferri-voto[aria-pressed="true"] { filter: none; opacity: 1; background: #eef3ef; }
+
+/* "Escribiendo…" */
+.ferri-escribiendo .ferri-burbuja { display: inline-flex; gap: 4px; padding: .8rem .9rem; }
+.ferri-escribiendo span { width: 6px; height: 6px; border-radius: 50%; background: var(--f-suave); animation: ferri-punto 1s infinite ease-in-out; }
+.ferri-escribiendo span:nth-child(2) { animation-delay: .15s; }
+.ferri-escribiendo span:nth-child(3) { animation-delay: .3s; }
+@keyframes ferri-punto { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+
+/* ---------- Sugerencias (chips) ---------- */
+/* Una sola fila deslizable: no le quita espacio a la conversación.
+   El borde derecho se desvanece para insinuar que hay más opciones. */
+.ferri-chips {
+  display: flex; flex-wrap: nowrap; gap: .4rem; padding: .5rem .9rem .6rem; background: var(--f-fondo);
+  overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; scroll-padding-inline: .9rem;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+}
+.ferri-chips::-webkit-scrollbar { display: none; }
+.ferri-chips::after { content: ""; flex: 0 0 12px; }
+.ferri-chips:empty { display: none; }
+.ferri-chip {
+  padding: .45rem .75rem; border: 1px solid #a9bdaf; border-radius: 999px; background: #fff; color: var(--f-verde-osc);
+  font-size: .86rem; cursor: pointer; line-height: 1.25; white-space: nowrap; flex: none;
+  transition: transform 140ms var(--f-ease-out), background-color 150ms ease, border-color 150ms ease;
+}
+.ferri-chip:active { transform: scale(.97); }
+.ferri-chip:focus-visible, .ferri-accion:focus-visible, .ferri-voto:focus-visible, .ferri-enviar:focus-visible, .ferri-entrada textarea:focus-visible { outline: 3px solid #263238; outline-offset: 2px; }
+
+/* ---------- Entrada de texto + micrófono ---------- */
+.ferri-entrada { display: flex; align-items: flex-end; gap: .35rem; padding: .6rem .6rem .4rem; border-top: 1px solid #e6ece8; background: #fff; }
+.ferri-entrada textarea {
+  flex: 1; min-width: 0; resize: none; max-height: 120px;
+  /* 16px evita que iOS haga zoom al enfocar */
+  font: inherit; font-size: 16px; line-height: 1.4; padding: .6rem .75rem;
+  border: 1px solid #a9bdaf; border-radius: 12px; background: #fff; color: var(--f-texto);
+}
+.ferri-entrada .ferri-icono { color: var(--f-verde-osc); }
+.ferri-mic { position: relative; }
+.ferri-mic[aria-pressed="true"] { background: #fdeceb; color: #b3261e; }
+/* Anillo que "respira" mientras escucha (transform + opacity) */
+.ferri-mic::after {
+  content: ""; position: absolute; inset: 4px; border-radius: 50%; border: 2px solid #b3261e; opacity: 0; transform: scale(.8); pointer-events: none;
+}
+.escuchando .ferri-mic::after { animation: ferri-escucha 1.3s var(--f-ease-out) infinite; }
+@keyframes ferri-escucha { 0% { opacity: .6; transform: scale(.8); } 100% { opacity: 0; transform: scale(1.35); } }
+.ferri-enviar {
+  display: inline-grid; place-items: center; width: 42px; height: 42px; flex: none; border: 0; border-radius: 12px;
+  background: var(--f-verde); color: #fff; cursor: pointer;
+  transition: transform 140ms var(--f-ease-out), background-color 150ms ease;
+}
+.ferri-enviar:active { transform: scale(.94); }
+.ferri-pie { margin: 0; padding: 0 .9rem .6rem; background: #fff; font-size: .72rem; color: var(--f-suave); text-align: center; line-height: 1.35; }
+
+/* ---------- Aviso breve (toast) ---------- */
+.ferri-aviso {
+  position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom)); z-index: 230; max-width: min(420px, calc(100vw - 32px));
+  padding: .7rem 1rem; border-radius: 12px; background: var(--f-verde-osc); color: #fff; font-size: .9rem; line-height: 1.4;
+  box-shadow: 0 8px 24px rgb(20 48 31 / .3);
+  opacity: 0; transform: translate(-50%, 8px);
+  transition: opacity 200ms ease, transform 300ms var(--f-ease-out);
+}
+.ferri-aviso.visible { opacity: 1; transform: translate(-50%, 0); }
+.ferri-aviso[hidden] { display: none; }
+
+/* Modo Botpress: Botpress trae su propia burbuja */
+.ferri-con-botpress .ferri-lanzador, .ferri-con-botpress .ferri-panel { display: none; }
+
+/* ---------- Hover solo con mouse (en el celular el hover se "pega") ---------- */
+@media (hover: hover) and (pointer: fine) {
+  .ferri-lanzador:hover { box-shadow: 0 1px 2px rgb(20 48 31 / .2), 0 12px 32px rgb(20 48 31 / .34); }
+  .ferri-icono:hover { background: rgb(255 255 255 / .14); }
+  .ferri-entrada .ferri-icono:hover { background: #eef3ef; }
+  .ferri-chip:hover { background: #eef3ef; border-color: var(--f-verde); }
+  .ferri-accion:hover, .ferri-enviar:hover { background: #145a2a; }
+  .ferri-voto:hover { opacity: 1; filter: none; }
+}
+
+/* ---------- Celular: hoja inferior a casi toda la pantalla ---------- */
+@media (max-width: 600px) {
+  /* Fondo atenuado detrás de la hoja; tocarlo cierra el chat */
+  .ferri::before { content: ""; position: fixed; inset: 0; z-index: 205; background: rgb(10 25 16 / .38); opacity: 0; pointer-events: none; transition: opacity 180ms ease; }
+  .ferri-abierto .ferri::before { opacity: 1; pointer-events: auto; transition-duration: 240ms; }
+  .ferri-lanzador-texto { display: none; }
+  .ferri-lanzador { padding: .45rem; }
+  .ferri-avatar { width: 44px; height: 44px; font-size: 1.1rem; }
+  .ferri-panel {
+    right: 0; bottom: 0; left: 0; width: 100%;
+    height: 100vh; height: 92dvh; border-radius: 18px 18px 0 0;
+    transform-origin: bottom center; transform: translateY(24px);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .ferri-cabecera .ferri-avatar { width: 38px; height: 38px; font-size: 1rem; }
+  .ferri-punto { left: 36px; }
+}
+
+/* ---------- Movimiento reducido: solo opacidad ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ferri-panel, .ferri-panel[data-estado="abierto"], .ferri-aviso, .ferri-aviso.visible { transform: none; }
+  .ferri-aviso { transform: translate(-50%, 0); }
+  .ferri-aviso.visible { transform: translate(-50%, 0); }
+  .ferri-msj { transition: opacity 150ms ease; }
+  @starting-style { .ferri-msj { transform: none; } }
+  .ferri-lanzador, .ferri-chip, .ferri-accion, .ferri-enviar, .ferri-icono, .ferri-voto { transition: none; }
+  .ferri-abierto .ferri-lanzador { transform: none; }
+  .escuchando .ferri-mic::after { animation: none; opacity: .6; transform: none; }
+  .ferri-escribiendo span { animation-duration: 2s; }
+}
+
+/* =====================================================================
+   S14 · Mejoras en la caja de resultado del test (index.html)
+   ===================================================================== */
+.escala-semaforo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; list-style: none; margin: .2rem 0 1rem; padding: 0; font-size: .85rem; }
+.escala-semaforo li { padding: .45rem .6rem; border-radius: .45rem; background: rgb(255 255 255 / .7); border: 1px solid #d8e2db; color: #5b6b61; line-height: 1.3; }
+.escala-semaforo span { display: block; font-weight: bold; }
+.escala-semaforo li::before { content: ""; display: inline-block; width: .7em; height: .7em; margin-right: .35em; border-radius: 50%; vertical-align: -.05em; }
+.paso-verde::before { background: #1e7a3a; }
+.paso-amarillo::before { background: #d19a07; }
+.paso-rojo::before { background: #b3261e; }
+.estado-verde .paso-verde, .estado-amarillo .paso-amarillo, .estado-rojo .paso-rojo { background: #fff; color: #1f2933; border-color: currentColor; box-shadow: 0 0 0 2px currentColor; }
+.estado-verde .paso-verde { color: #1e7a3a; }
+.estado-amarillo .paso-amarillo { color: #8a6203; }
+.estado-rojo .paso-rojo { color: #b3261e; }
+.estado-verde .paso-verde span, .estado-amarillo .paso-amarillo span, .estado-rojo .paso-rojo span { color: inherit; }
+.escala-semaforo li span::after { content: ""; }
+.estado-verde .paso-verde span::after, .estado-amarillo .paso-amarillo span::after, .estado-rojo .paso-rojo span::after { content: " ← tú"; font-weight: normal; }
+.significado { background: rgb(255 255 255 / .75); padding: .7rem .9rem; border-radius: .45rem; }
+.acciones-resultado { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.boton-ferri { background: #14301f; transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1); }
+.boton-ferri:active, .resultado-sintomas .boton:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) { .boton-ferri:hover { background: #0b1f13; } }
+@media (max-width: 600px) {
+  .escala-semaforo { font-size: .78rem; gap: .3rem; }
+  .escala-semaforo li { padding: .4rem .45rem; }
+  .estado-verde .paso-verde span::after, .estado-amarillo .paso-amarillo span::after, .estado-rojo .paso-rojo span::after { content: ""; }
+  .acciones-resultado .boton { width: 100%; text-align: center; }
+}

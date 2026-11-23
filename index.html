@@ -11,6 +11,12 @@
   <!-- Este icono aparece en la pestaña del navegador. -->
   <link rel="icon" type="image/svg+xml" href="iconos/favicon.svg">
   <script src="js/test-sintomas.js" defer></script>
+  <!-- S14 · Ferri, asistente conversacional (IA) + voz -->
+  <link rel="stylesheet" href="css/ferri.css">
+  <script src="js/ferri-config.js" defer></script>
+  <script src="js/ferri-conocimiento.js" defer></script>
+  <script src="js/ferri-motor.js" defer></script>
+  <script src="js/ferri-chat.js" defer></script>
 
 </head>
 
@@ -228,8 +234,23 @@
       <div id="resultado-sintomas" class="resultado-sintomas" role="status" aria-live="polite" hidden>
         <p id="conteo-sintomas" class="etiqueta"></p>
         <h3 id="titulo-resultado"></h3>
+        <!-- S14: escala del semáforo para que se entienda qué significa cada color -->
+        <ol class="escala-semaforo" aria-label="Escala del semáforo">
+          <li class="paso-verde"><span>Verde</span> 0–1 síntomas</li>
+          <li class="paso-amarillo"><span>Amarillo</span> 2–3 síntomas</li>
+          <li class="paso-rojo"><span>Rojo</span> 4–5 síntomas</li>
+        </ol>
         <p id="mensaje-resultado"></p>
-        <a id="boton-control" class="boton" href="#contacto" hidden>Programar control</a>
+        <p class="significado"><strong>En palabras simples:</strong> <span id="significado-resultado"></span></p>
+        <p id="lista-marcados" class="nota"></p>
+        <div class="acciones-resultado">
+          <a id="boton-control" class="boton" href="#contacto" hidden>Programar control</a>
+          <!-- S14: abre a Ferri, el asistente conversacional, con este resultado como contexto -->
+          <button id="boton-ferri" class="boton boton-ferri" type="button">
+            <span class="ferri-mini" aria-hidden="true">Fe</span> ¿Dudas con tu resultado? Pregúntale a Ferri
+          </button>
+        </div>
+        <p class="nota">Recuerda: este test no mide tu sangre, solo cuenta síntomas.</p>
       </div>
       <p class="nota">Datos de ejemplo. No se guarda ninguna respuesta.</p>
     </section>
