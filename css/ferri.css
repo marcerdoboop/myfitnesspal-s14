@@ -8,6 +8,7 @@
    - El panel crece desde el botón que lo abre (transform-origin).
    - Botones con :active scale(.97); hover solo con mouse real.
    - prefers-reduced-motion: solo opacidad, sin desplazamientos.
+   S14 (versión final): Ferri es solo de texto; la voz vive en Recordatorios.
    ===================================================================== */
 .ferri {
   --f-verde: #1e7a3a;
@@ -119,7 +120,6 @@
 .ferri-burbuja p:last-of-type { margin-bottom: 0; }
 .ferri-burbuja ul { margin: .4rem 0 0; padding-left: 1.15rem; }
 .ferri-burbuja li { margin-bottom: .3rem; }
-.ferri-por-voz { display: block; margin-top: .2rem; font-size: .72rem; opacity: .8; }
 
 /* Entrada de cada mensaje: sube 6px y aparece (CSS @starting-style, sin JS) */
 .ferri-msj {
@@ -187,14 +187,6 @@
   border: 1px solid #a9bdaf; border-radius: 12px; background: #fff; color: var(--f-texto);
 }
 .ferri-entrada .ferri-icono { color: var(--f-verde-osc); }
-.ferri-mic { position: relative; }
-.ferri-mic[aria-pressed="true"] { background: #fdeceb; color: #b3261e; }
-/* Anillo que "respira" mientras escucha (transform + opacity) */
-.ferri-mic::after {
-  content: ""; position: absolute; inset: 4px; border-radius: 50%; border: 2px solid #b3261e; opacity: 0; transform: scale(.8); pointer-events: none;
-}
-.escuchando .ferri-mic::after { animation: ferri-escucha 1.3s var(--f-ease-out) infinite; }
-@keyframes ferri-escucha { 0% { opacity: .6; transform: scale(.8); } 100% { opacity: 0; transform: scale(1.35); } }
 .ferri-enviar {
   display: inline-grid; place-items: center; width: 42px; height: 42px; flex: none; border: 0; border-radius: 12px;
   background: var(--f-verde); color: #fff; cursor: pointer;
@@ -254,7 +246,6 @@
   @starting-style { .ferri-msj { transform: none; } }
   .ferri-lanzador, .ferri-chip, .ferri-accion, .ferri-enviar, .ferri-icono, .ferri-voto { transition: none; }
   .ferri-abierto .ferri-lanzador { transform: none; }
-  .escuchando .ferri-mic::after { animation: none; opacity: .6; transform: none; }
   .ferri-escribiendo span { animation-duration: 2s; }
 }
 
@@ -286,3 +277,14 @@
   .estado-verde .paso-verde span::after, .estado-amarillo .paso-amarillo span::after, .estado-rojo .paso-rojo span::after { content: ""; }
   .acciones-resultado .boton { width: 100%; text-align: center; }
 }
+
+/* Enlaces de ayuda que abren a Ferri con una pregunta ("¿Qué significa mg?") */
+.ayuda-ferri {
+  display: inline-flex; align-items: center; gap: .35rem; padding: .3rem .7rem; margin: .2rem .3rem .2rem 0;
+  border: 1px dashed #8aa593; border-radius: 999px; background: transparent; color: #17692f;
+  font: inherit; font-size: .9rem; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1), background-color 150ms ease;
+}
+.ayuda-ferri::before { content: "Fe"; display: inline-grid; place-items: center; width: 1.4em; height: 1.4em; border-radius: 50%; background: #1e7a3a; color: #fff; font-family: Georgia, serif; font-size: .75em; }
+.ayuda-ferri:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) { .ayuda-ferri:hover { background: #e4ebe6; } }

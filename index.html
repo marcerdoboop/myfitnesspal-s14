@@ -17,7 +17,16 @@
   <script src="js/ferri-conocimiento.js" defer></script>
   <script src="js/ferri-motor.js" defer></script>
   <script src="js/ferri-chat.js" defer></script>
+  <!-- S14 · Mejoras de cada integrante -->
+  <link rel="stylesheet" href="css/mejoras.css">
+  <script src="js/voz-recordatorio.js" defer></script>
+  <script src="js/menus-personalizados.js" defer></script>
+  <script src="js/plato-foto.js" defer></script>
 
+  <!-- S14 · Interfaz adaptativa (va al final para poder ajustar todos los estilos) -->
+  <link rel="stylesheet" href="css/adaptativo.css">
+  <script src="js/apariencia-temprano.js"></script>
+  <script src="js/apariencia.js" defer></script>
 </head>
 
 <body>
@@ -109,8 +118,43 @@
       <div class="contenedor">
         <p class="etiqueta">HU01 · Semáforo diario de hierro</p>
         <h2>¿Cómo va tu día?</h2>
-        <p>Elige un caso y mira el semáforo. Son datos de ejemplo: la app real los calcularía con los alimentos que
-          registres.</p>
+        <!-- S14 · Mejora: reconocimiento de imágenes del plato (js/plato-foto.js) -->
+        <div id="mi-plato" class="mi-plato" hidden>
+          <h3>Registra lo que comiste</h3>
+          <p>Sube una foto de tu plato y estimo cuánto hierro tiene. También puedes elegir los alimentos de una lista.</p>
+          <div class="plato-acciones">
+            <label class="boton plato-foto-boton" for="foto-plato">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4.5 7.6 6.5H5A2.5 2.5 0 0 0 2.5 9v8.5A2.5 2.5 0 0 0 5 20h14a2.5 2.5 0 0 0 2.5-2.5V9A2.5 2.5 0 0 0 19 6.5h-2.6L15 4.5H9Zm3 4.3a4.2 4.2 0 1 1 0 8.4 4.2 4.2 0 0 1 0-8.4Z"/></svg>
+              Subir foto del plato
+            </label>
+            <input id="foto-plato" class="entrada-oculta" type="file" accept="image/*">
+            <button type="button" class="plato-manual-boton" aria-expanded="false">Elegir de la lista</button>
+          </div>
+          <div class="plato-analisis" hidden>
+            <img class="plato-vista" alt="" width="160" height="160">
+            <div class="plato-resultado">
+              <p class="plato-estado" role="status" aria-live="polite"></p>
+              <ul class="plato-detectados"></ul>
+              <div class="plato-botones">
+                <button type="button" class="boton plato-confirmar">Sumar a mi día</button>
+                <button type="button" class="plato-cancelar">Descartar foto</button>
+              </div>
+              <p class="nota">¿Falta algo? Agrégalo desde “Elegir de la lista”.</p>
+            </div>
+          </div>
+          <div class="plato-manual" hidden></div>
+          <div class="plato-diario" data-estado="rojo">
+            <div class="diario-cabecera"><strong>Hoy:</strong> <span class="diario-total">0 mg de 18 mg</span>
+              <button type="button" class="ayuda-ferri" data-ferri-pregunta="¿Qué es la meta de 18 mg?">¿Qué es la meta de 18 mg?</button></div>
+            <div class="diario-barra" aria-hidden="true"><span></span></div>
+            <p class="diario-estado" aria-live="polite"></p>
+            <ul class="diario-lista"></ul>
+            <button type="button" class="diario-reiniciar" hidden>Empezar el día de cero</button>
+          </div>
+          <p class="nota">La foto se analiza en tu dispositivo y no se sube a ningún servidor. Es una <strong>estimación por
+              colores</strong> (demostración): revisa y corrige los alimentos. Hierro aproximado por porción.</p>
+        </div>
+        <p>O mira tres casos de ejemplo:</p>
         <!-- PASO 7: mismo name, distintos id. Los radios controlan paneles con CSS. -->
         <fieldset class="orientador">
           <legend>Consumo de hoy</legend>
@@ -143,6 +187,16 @@
       <p class="etiqueta">HU03 · Menús con alimentos peruanos accesibles</p>
       <h2>Un menú rico en hierro que te alcance.</h2>
       <p>Elige cuánto puedes gastar al día y mira tres menús con su hierro y su costo aproximado.</p>
+      <!-- S14 · Mejora: recomendaciones personalizadas (js/menus-personalizados.js) -->
+      <fieldset id="preferencias-menu" class="preferencias" hidden>
+        <legend>Tus preferencias</legend>
+        <label class="pref"><input type="checkbox" value="vegetariano"> Soy vegetariano/a</label>
+        <label class="pref"><input type="checkbox" value="sin-visceras"> No como hígado ni sangrecita</label>
+        <label class="pref"><input type="checkbox" value="sin-pescado"> No como pescado</label>
+        <label class="pref"><input type="checkbox" value="sin-huevo"> No como huevo</label>
+        <label class="pref pref-gusto"><input type="checkbox" value="menestras"> Me gustan las menestras</label>
+        <button type="button" class="pref-limpiar">Quitar filtros</button>
+      </fieldset>
       <fieldset class="orientador">
         <legend>Presupuesto diario</legend>
         <input type="radio" name="presupuesto" id="p10" checked><label for="p10">S/ 10</label>
@@ -192,8 +246,9 @@
           </div>
         </div>
       </fieldset>
-      <p class="nota">Hierro y costos aproximados, inventados para la demostración. “Agregar al diario” te lleva al
-        semáforo: en la app real el hierro se sumaría solo.</p>
+      <p class="nota">Hierro y costos aproximados, inventados para la demostración. “Agregar al diario” suma el hierro
+        del menú a tu semáforo de hoy.
+        <button type="button" class="ayuda-ferri" data-ferri-pregunta="¿Qué significa mg?">¿Qué significa “mg”?</button></p>
     </section>
     <section id="galeria" class="seccion fondo">
       <div class="contenedor">
@@ -265,6 +320,21 @@
         </div>
         <!-- PASO 8: required valida campos. Sin name: no añadimos datos a la URL. -->
         <form action="confirmacion.html" method="get" class="formulario">
+          <!-- S14 · Mejora con VOZ: dictar el recordatorio y rellenar el formulario (js/voz-recordatorio.js) -->
+          <div id="dictado-recordatorio" class="dictado" hidden>
+            <p class="dictado-titulo"><strong>¿Apurado?</strong> Dícelo con tu voz y lleno el formulario por ti.</p>
+            <button type="button" class="dictado-boton" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <span class="dictado-texto">Dictar recordatorio</span>
+            </button>
+            <label class="dictado-etiqueta" for="frase-recordatorio">o escríbelo en una frase</label>
+            <div class="dictado-fila">
+              <input id="frase-recordatorio" type="text" autocomplete="off" placeholder="Suplemento de hierro, todos los días, a las 8">
+              <button type="button" class="dictado-usar">Rellenar</button>
+            </div>
+            <p class="dictado-estado" role="status" aria-live="polite"></p>
+            <div class="dictado-resumen" hidden></div>
+          </div>
           <label for="nombre">Nombre de prueba</label><input id="nombre" type="text" required maxlength="60"
             placeholder="Ejemplo: Ana" autocomplete="off">
           <label for="correo">Correo de prueba</label><input id="correo" type="email" required

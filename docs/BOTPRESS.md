@@ -46,4 +46,3 @@ Si los scripts no cargan en 8 segundos (sin internet, URL mal copiada o bot sin 
 | Privacidad | Nada sale del navegador | Los mensajes van a Botpress Cloud |
 | Respuestas | Predecibles, revisadas, con fuentes | Más flexibles; pueden equivocarse |
 | Conoce el test | Sí: lee y **modifica** las casillas (con permiso) | Recibe el resultado como texto |
-| Voz 🎤🔊 | Sí | Según el widget de Botpress |

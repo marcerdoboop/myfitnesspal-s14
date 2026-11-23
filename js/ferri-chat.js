@@ -2,18 +2,21 @@
 // FERRI · Interfaz del chat (Semana 14 · Human-AI Interaction)
 // ---------------------------------------------------------------------
 // - Botón flotante + panel de chat accesible (teclado, lector de pantalla).
-// - Multimodal: texto, voz 🎤 (Web Speech API) y lectura en voz alta 🔊.
+// - Solo TEXTO y solo dudas sobre anemia y hierro (mg, meta de 18 mg,
+//   absorción, hemoglobina, resultado del test). No programa recordatorios
+//   ni recomienda menús: eso lo hacen sus propias secciones.
 // - Transparencia: muestra qué datos usa ("Contexto: tu test") y en qué
 //   se basa cada respuesta ("¿En qué me baso?").
-// - Control del usuario: reiniciar, apagar la voz, deshacer cambios,
+// - Control del usuario: reiniciar, deshacer cambios en el test,
 //   calificar respuestas 👍/👎 (👎 = "explícamelo de otra forma").
+// - Confianza: avisa siempre que no reemplaza a un médico.
 // - Todo vive en esta pestaña (sessionStorage). No se envía a servidores
 //   en modo local.
 // =====================================================================
 (function () {
   'use strict';
 
-  const CONFIG = window.FERRI_CONFIG || { motor: 'local', voz: { idioma: 'es-PE' } };
+  const CONFIG = window.FERRI_CONFIG || { motor: 'local' };
   const CLAVE = 'ferri-sesion-v1';
   const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
   const enIndex = !!document.querySelector('#form-sintomas');
@@ -23,10 +26,9 @@
   try { guardado = JSON.parse(sessionStorage.getItem(CLAVE)) || {}; } catch (e) { guardado = {}; }
   let historial = Array.isArray(guardado.historial) ? guardado.historial : [];
   let resultado = guardado.resultado || null;
-  let leerEnVoz = guardado.leerEnVoz != null ? guardado.leerEnVoz : !!(CONFIG.voz && CONFIG.voz.leerRespuestas);
 
   function guardar() {
-    try { sessionStorage.setItem(CLAVE, JSON.stringify({ historial: historial.slice(-40), resultado, leerEnVoz })); } catch (e) { /* modo privado: no pasa nada */ }
+    try { sessionStorage.setItem(CLAVE, JSON.stringify({ historial: historial.slice(-40), resultado })); } catch (e) { /* modo privado: no pasa nada */ }
   }
 
   // ---------- Motor ----------
@@ -59,11 +61,8 @@
         <span class="ferri-avatar" aria-hidden="true">Fe</span>
         <div class="ferri-identidad">
           <h2 id="ferri-titulo">Ferri</h2>
-          <p>Asistente con IA · no es un médico</p>
+          <p>Dudas sobre anemia y hierro · no reemplaza al médico</p>
         </div>
-        <button class="ferri-icono" type="button" data-accion="voz" aria-pressed="false" aria-label="Leer respuestas en voz alta" title="Leer respuestas en voz alta">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="ferri-ondas" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </button>
         <button class="ferri-icono" type="button" data-accion="reiniciar" aria-label="Borrar conversación" title="Borrar conversación">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 4v4h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -80,15 +79,12 @@
       <div class="ferri-chips" role="group" aria-label="Sugerencias"></div>
       <form class="ferri-entrada" autocomplete="off">
         <label class="ferri-solo-lector" for="ferri-texto">Escribe tu pregunta</label>
-        <textarea id="ferri-texto" rows="1" maxlength="400" placeholder="Escribe tu duda…" enterkeyhint="send"></textarea>
-        <button class="ferri-icono ferri-mic" type="button" data-accion="mic" aria-pressed="false" aria-label="Hablar con el micrófono" title="Hablar">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </button>
+        <textarea id="ferri-texto" rows="1" maxlength="400" placeholder="Ej.: ¿qué significa mg?" enterkeyhint="send"></textarea>
         <button class="ferri-enviar" type="submit" aria-label="Enviar">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/></svg>
         </button>
       </form>
-      <p class="ferri-pie">Respuestas automáticas con información del MINSA y la OMS. No guardo tus datos.</p>
+      <p class="ferri-pie">Asistente automático con información del MINSA y la OMS. <strong>No reemplaza a un médico.</strong> No guardo tus datos.</p>
     </section>
     <div class="ferri-aviso" role="status" aria-live="polite" hidden></div>`;
   document.body.appendChild(raiz);
@@ -96,7 +92,7 @@
   const $ = s => raiz.querySelector(s);
   const lanzador = $('.ferri-lanzador'), panel = $('.ferri-panel'), mensajes = $('.ferri-mensajes');
   const chips = $('.ferri-chips'), form = $('.ferri-entrada'), campo = $('#ferri-texto');
-  const botonVoz = $('[data-accion="voz"]'), botonMic = $('[data-accion="mic"]'), aviso = $('.ferri-aviso');
+  const aviso = $('.ferri-aviso');
 
   // ---------- Abrir / cerrar (transiciones interrumpibles, sin keyframes) ----------
   let temporizadorCierre = null;
@@ -131,7 +127,6 @@
     panel.dataset.estado = 'cerrado';
     lanzador.setAttribute('aria-expanded', 'false');
     document.documentElement.classList.remove('ferri-abierto');
-    detenerVoz(); detenerMic();
     temporizadorCierre = setTimeout(() => { panel.hidden = true; }, reducirMovimiento.matches ? 0 : 180);
     lanzador.focus({ preventScroll: true });
   }
@@ -140,10 +135,17 @@
   raiz.addEventListener('click', e => { if (e.target === raiz && panel.dataset.estado === 'abierto') cerrar(); }); // toque en el fondo (celular)
   raiz.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.dataset.estado === 'abierto') { e.stopPropagation(); cerrar(); } });
   document.addEventListener('ferri:abrir', e => abrir(e.detail || {}));
+  // Enlaces de ayuda en la página: <button data-ferri-pregunta="¿Qué significa mg?">
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-ferri-pregunta]');
+    if (!b || raiz.contains(b)) return;
+    e.preventDefault();
+    abrir();
+    enviar(b.dataset.ferriPregunta);
+  });
 
   $('[data-accion="cerrar"]').addEventListener('click', cerrar);
   $('[data-accion="reiniciar"]').addEventListener('click', () => {
-    detenerVoz();
     historial = []; mensajes.textContent = ''; motor.reiniciar(); guardar();
     decirBot(motor.bienvenida(), false);
     avisar('Conversación borrada.');
@@ -180,7 +182,6 @@
 
     if (m.de === 'usuario') {
       burbuja.textContent = m.texto;
-      if (m.porVoz) { const v = document.createElement('span'); v.className = 'ferri-por-voz'; v.textContent = '🎤 dictado'; burbuja.appendChild(v); }
     } else {
       const lectorAntes = document.createElement('span'); lectorAntes.className = 'ferri-solo-lector'; lectorAntes.textContent = 'Ferri dice: ';
       burbuja.appendChild(lectorAntes);
@@ -245,9 +246,9 @@
 
   function pintarChips(lista) {
     chips.textContent = '';
-    (lista || []).slice(0, 4).forEach(t => {
+    Array.from(new Set(lista || [])).slice(0, 4).forEach(t => {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'ferri-chip'; b.textContent = t;
-      b.addEventListener('click', () => enviar(t, false));
+      b.addEventListener('click', () => enviar(t));
       chips.appendChild(b);
     });
   }
@@ -259,7 +260,6 @@
     historial.push(m); guardar();
     pintarMensaje(m, animar);
     pintarChips(resp.chips);
-    if (leerEnVoz) hablar(resp);
   }
 
   let escribiendo = null;
@@ -276,10 +276,10 @@
     setTimeout(() => { if (escribiendo) { escribiendo.remove(); escribiendo = null; } decirBot(resp); }, espera);
   }
 
-  function enviar(texto, porVoz) {
+  function enviar(texto) {
     texto = String(texto || '').trim();
     if (!texto) return;
-    const m = { de: 'usuario', texto, porVoz: !!porVoz };
+    const m = { de: 'usuario', texto };
     historial.push(m); guardar();
     pintarMensaje(m);
     campo.value = ''; ajustarAltura();
@@ -287,31 +287,18 @@
     responderCon(motor.responder(texto));
   }
 
-  form.addEventListener('submit', e => { e.preventDefault(); enviar(campo.value, false); });
-  campo.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); enviar(campo.value, false); } });
+  form.addEventListener('submit', e => { e.preventDefault(); enviar(campo.value); });
+  campo.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); enviar(campo.value); } });
   function ajustarAltura() { campo.style.height = 'auto'; campo.style.height = Math.min(campo.scrollHeight, 120) + 'px'; }
   campo.addEventListener('input', ajustarAltura);
 
   function ejecutarAccion(a) {
-    if (a.tipo === 'control') {
-      if (!enIndex) { location.href = 'index.html?control=1#contacto'; return; }
-      const select = document.querySelector('#tipo');
-      if (select) select.value = 'Control de hemoglobina';
-      cerrar();
-      const destino = document.querySelector('#contacto');
-      destino.scrollIntoView({ behavior: reducirMovimiento.matches ? 'auto' : 'smooth' });
-      setTimeout(() => { const f = document.querySelector('#frecuencia'); if (f) f.focus({ preventScroll: true }); }, 400);
-      avisar('Elegí “Control de hemoglobina”. Completa la frecuencia y la hora.');
-    } else if (a.tipo === 'ir') {
+    if (a.tipo === 'ir') {
       if (!enIndex) { location.href = 'index.html' + a.destino; return; }
       cerrar();
       const destino = document.querySelector(a.destino);
       if (destino) { destino.scrollIntoView({ behavior: reducirMovimiento.matches ? 'auto' : 'smooth' }); destino.setAttribute('tabindex', '-1'); destino.focus({ preventScroll: true }); }
     }
-  }
-  // Viene de otra página con ?control=1
-  if (enIndex && /[?&]control=1/.test(location.search)) {
-    const select = document.querySelector('#tipo'); if (select) select.value = 'Control de hemoglobina';
   }
 
   // ---------- Resultado del test ----------
@@ -337,80 +324,6 @@
     temporizadorAviso = setTimeout(() => { aviso.classList.remove('visible'); setTimeout(() => { aviso.hidden = true; }, 200); }, 2600);
   }
 
-  // ---------- Voz: lectura en voz alta (🔊) ----------
-  const puedeHablar = 'speechSynthesis' in window;
-  function textoPlano(resp) {
-    return [].concat(resp.texto || [], resp.lista || []).join('. ')
-      .replace(/\*\*/g, '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').replace(/→/g, '').replace(/\s+/g, ' ');
-  }
-  function hablar(resp) {
-    if (!puedeHablar) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(textoPlano(resp));
-    u.lang = (CONFIG.voz && CONFIG.voz.idioma) || 'es-PE';
-    const voces = window.speechSynthesis.getVoices();
-    const voz = voces.find(v => v.lang === u.lang) || voces.find(v => v.lang && v.lang.startsWith('es'));
-    if (voz) u.voice = voz;
-    u.rate = 1.02;
-    window.speechSynthesis.speak(u);
-  }
-  function detenerVoz() { if (puedeHablar) window.speechSynthesis.cancel(); }
-  function pintarBotonVoz() { botonVoz.setAttribute('aria-pressed', String(leerEnVoz)); botonVoz.title = leerEnVoz ? 'Dejar de leer en voz alta' : 'Leer respuestas en voz alta'; }
-  if (!puedeHablar) botonVoz.hidden = true;
-  pintarBotonVoz();
-  botonVoz.addEventListener('click', () => {
-    leerEnVoz = !leerEnVoz; guardar(); pintarBotonVoz();
-    if (!leerEnVoz) detenerVoz();
-    avisar(leerEnVoz ? 'Leeré mis respuestas en voz alta.' : 'Lectura en voz alta apagada.');
-  });
-
-  // ---------- Voz: reconocimiento (🎤) ----------
-  const Reconocimiento = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let rec = null, escuchando = false, textoPrevio = '';
-  if (!Reconocimiento) {
-    botonMic.disabled = true;
-    botonMic.title = 'Tu navegador no permite dictar por voz. Prueba con Chrome o Edge, o escribe tu pregunta.';
-    botonMic.setAttribute('aria-label', botonMic.title);
-  }
-  function detenerMic() { if (rec && escuchando) rec.abort(); }
-  botonMic.addEventListener('click', () => {
-    if (!Reconocimiento) return;
-    if (escuchando) { rec.stop(); return; }
-    detenerVoz();
-    rec = new Reconocimiento();
-    rec.lang = (CONFIG.voz && CONFIG.voz.idioma) || 'es-PE';
-    rec.interimResults = true;
-    rec.maxAlternatives = 1;
-    textoPrevio = campo.value;
-    let final = '';
-    rec.onstart = () => { escuchando = true; botonMic.setAttribute('aria-pressed', 'true'); form.classList.add('escuchando'); campo.placeholder = 'Te escucho… (toca 🎤 para terminar)'; };
-    rec.onresult = ev => {
-      let parcial = '';
-      for (let i = ev.resultIndex; i < ev.results.length; i++) {
-        if (ev.results[i].isFinal) final += ev.results[i][0].transcript; else parcial += ev.results[i][0].transcript;
-      }
-      campo.value = (textoPrevio + ' ' + final + parcial).trim(); ajustarAltura();
-    };
-    rec.onerror = ev => {
-      const motivos = {
-        'not-allowed': 'No tengo permiso para usar el micrófono. Puedes activarlo en el candado de la barra de direcciones, o escribir tu pregunta.',
-        'service-not-allowed': 'El dictado por voz no está disponible aquí. Puedes escribir tu pregunta.',
-        'no-speech': 'No te escuché. Intenta de nuevo hablando cerca del micrófono.',
-        'audio-capture': 'No encontré un micrófono. Puedes escribir tu pregunta.',
-        'network': 'El dictado necesita internet. Revisa tu conexión o escribe tu pregunta.'
-      };
-      if (ev.error !== 'aborted') avisar(motivos[ev.error] || 'No pude escucharte. Puedes escribir tu pregunta.');
-    };
-    rec.onend = () => {
-      escuchando = false; botonMic.setAttribute('aria-pressed', 'false'); form.classList.remove('escuchando'); campo.placeholder = 'Escribe tu duda…';
-      const texto = campo.value.trim();
-      if (final.trim() && texto) {
-        if (!leerEnVoz && puedeHablar) { leerEnVoz = true; pintarBotonVoz(); avisar('Como me hablaste, te responderé en voz alta (🔊 para apagar).'); }
-        enviar(texto, true);
-      }
-    };
-    try { rec.start(); } catch (e) { avisar('No pude iniciar el micrófono.'); }
-  });
 
   // ---------- Modo Botpress (opcional, ver docs/BOTPRESS.md) ----------
   const scriptsBP = (CONFIG.botpress && CONFIG.botpress.scripts || []).filter(Boolean);

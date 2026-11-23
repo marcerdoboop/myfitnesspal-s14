@@ -92,7 +92,10 @@
     alimentos:     { comer: 3, comida: 3, alimentos: 3.5, alimento: 3, alimentacion: 3, dieta: 3, 'que como': 5, 'que debo comer': 6, 'con hierro': 3, 'tienen hierro': 3, 'tiene hierro': 3, hierro: 1.5, nutricion: 3, platos: 2, recetas: 3, receta: 3 },
     absorcion:     { absorber: 4, absorcion: 4, 'vitamina c': 5, vitamina: 3, limon: 3, naranja: 3, te: 1, cafe: 3, infusion: 3, 'con la comida': 2, combinar: 3, mezclar: 2 },
     suplemento:    { suplemento: 5, suplementos: 5, pastilla: 4, pastillas: 4, 'sulfato ferroso': 6, sulfato: 4, jarabe: 4, gotas: 3, multimicronutrientes: 5, chispitas: 5, vitaminas: 2, 'tomar hierro': 5, efectos: 2, estrenimiento: 3 },
-    valor_hb:      { 'mi hemoglobina es': 6, 'tengo hemoglobina': 5, 'me salio hemoglobina': 6, 'hemoglobina de': 4, 'g dl': 4, gdl: 4, mg: 1 },
+    valor_hb:      { 'mi hemoglobina es': 6, 'tengo hemoglobina': 5, 'me salio hemoglobina': 6, 'hemoglobina de': 4, 'g dl': 4, gdl: 4, },
+    mg:            { mg: 3, miligramo: 6, miligramos: 6, 'que es mg': 7, 'que significa mg': 7, 'que son los mg': 7, 'que quiere decir mg': 7 },
+    meta:          { meta: 4, 'meta de 18': 7, '18 mg': 6, 'meta diaria': 7, 'mi meta': 5, 'cumplir la meta': 6, 'semaforo de hierro': 5, 'semaforo diario': 6 },
+    heminico:      { heminico: 7, 'no heminico': 7, 'tipos de hierro': 7, 'hierro animal': 5, 'hierro vegetal': 5 },
     programar_control: { recordatorio: 5, recordar: 4, 'programar': 4, programa: 3, agendar: 4, agenda: 3, cita: 4, alarma: 4, aviso: 3, 'no olvidar': 4, control: 2.5 },
     menus:         { menu: 3, menus: 4, presupuesto: 5, barato: 4, baratos: 4, economico: 4, soles: 3, plata: 2, dinero: 2, cuesta: 1, 'poco dinero': 5 },
     preocupacion:  { grave: 5, 'es grave': 6, preocupado: 5, preocupada: 5, miedo: 5, asustado: 5, asustada: 5, peligroso: 4, 'me voy a morir': 6, nervioso: 4, nerviosa: 4, malo: 1.5 },
@@ -203,12 +206,14 @@
 
     function chipsSegun(clave) {
       const mapa = {
+        mg: ['¿Qué es la meta de 18 mg?', '¿Qué es la absorción?', '¿Qué alimento tiene más hierro?'],
+        meta: ['¿Qué significa mg?', '¿Qué alimento tiene más hierro?', '¿Qué es la absorción?'],
         hierro: ['¿Qué debo comer?', '¿Cuánto hierro necesito?', '¿Qué es la hemoglobina?'],
         hemoglobina: ['¿Dónde me hago el examen?', '¿Qué valor es normal?', '¿Qué debo comer?'],
         anemia: ['¿Tengo anemia?', '¿Qué debo comer?', '¿Quiénes tienen más riesgo?'],
-        examen: ['Programar control', '¿Hay que ir en ayunas?', '¿Qué es la hemoglobina?'],
-        absorcion: ['¿Qué alimentos tienen hierro?', 'Ver menús baratos'],
-        alimentos: ['¿Cómo absorbo mejor el hierro?', 'Ver menús baratos', '¿La espinaca tiene hierro?'],
+        examen: ['¿Hay que ir en ayunas?', '¿Duele el examen?', '¿Qué es la hemoglobina?'],
+        absorcion: ['¿Qué alimentos tienen hierro?', '¿Qué significa mg?'],
+        alimentos: ['¿Cómo absorbo mejor el hierro?', '¿Qué significa mg?', '¿La espinaca tiene hierro?'],
         suplemento: ['¿Dónde me hago el examen?', '¿Qué debo comer?'],
         riesgo: ['¿Qué es la anemia?', '¿Dónde me hago el examen?'],
         confianza: ['¿Dónde me hago el examen?', 'Explícame mi resultado'],
@@ -236,7 +241,7 @@
       const baseTxt = 'Tus respuestas del test: ' + cuantos + ' → ' + e.rango + ' = ' + e.color;
 
       if (modo === 'simple' || ctx.nivel === 'simple') {
-        return r({ texto: [e.emoji + ' ' + e.simple], chips: ['¿Qué hago ahora?', '¿Por qué ' + e.color + '?', 'Programar control'], base: baseTxt, tema: 'resultado' });
+        return r({ texto: [e.emoji + ' ' + e.simple], chips: ['¿Qué hago ahora?', '¿Por qué ' + e.color + '?', '¿Dónde me hago el examen?'], base: baseTxt, tema: 'resultado' });
       }
       if (modo === 'porque') {
         const extra = sintomas.length ? 'Marcaste ' + cuantos + '. Por eso tu semáforo salió en **' + e.color + '**.' : 'No marcaste síntomas, por eso salió en **verde**.';
@@ -250,8 +255,7 @@
       return r({
         texto: [e.emoji + ' Tu semáforo salió en **' + e.color + '** porque marcaste ' + cuantos + '.', e.significado, '**¿Qué puedes hacer?**'],
         lista: e.hacer,
-        chips: ['¿Por qué ' + e.color + '?', '¿Qué es la hemoglobina?', 'Cuéntame de mis síntomas'].concat(estado !== 'estado-verde' ? ['Programar control'] : ['¿Qué debo comer?']),
-        acciones: estado !== 'estado-verde' ? [{ tipo: 'control', etiqueta: 'Programar control de hemoglobina' }] : [],
+        chips: ['¿Por qué ' + e.color + '?', '¿Qué es la hemoglobina?', 'Cuéntame de mis síntomas'].concat(estado !== 'estado-verde' ? ['¿Dónde me hago el examen?'] : ['¿Qué debo comer?']),
         base: baseTxt,
         tema: 'resultado'
       });
@@ -266,8 +270,7 @@
       return r({
         texto: ['Con tu semáforo en **' + e.color + '** te recomiendo:'],
         lista: e.hacer,
-        chips: ['¿Dónde me hago el examen?', '¿Qué debo comer?'].concat(ctx.resultado.estado !== 'estado-verde' ? ['Programar control'] : []),
-        acciones: ctx.resultado.estado !== 'estado-verde' ? [{ tipo: 'control', etiqueta: 'Programar control de hemoglobina' }] : [],
+        chips: ['¿Dónde me hago el examen?', '¿Qué debo comer?'].concat(ctx.resultado.estado !== 'estado-verde' ? ['¿Dónde me hago el examen?'] : []),
         base: 'Recomendación para semáforo ' + e.color + ' (' + e.rango + ')'
       });
     }
@@ -293,7 +296,7 @@
         const b = lista[1];
         textos.push('Y **' + b.nombre + '**: ' + b.mg + ' por ' + b.porcion + ' (nivel ' + b.nivel + ').');
       }
-      return r({ texto: textos, chips: ['¿Qué alimento tiene más hierro?', '¿Cómo absorbo mejor el hierro?', 'Ver menús baratos'], base: 'Valores aproximados por porción casera · Tablas peruanas de composición de alimentos (CENAN)', tema: 'alimento:' + a.id });
+      return r({ texto: textos, chips: ['¿Qué alimento tiene más hierro?', '¿Cómo absorbo mejor el hierro?', '¿Qué significa mg?'], base: 'Valores aproximados por porción casera · Tablas peruanas de composición de alimentos (CENAN)', tema: 'alimento:' + a.id });
     }
 
     function cambiarTest(tipo, ids) {
@@ -338,15 +341,15 @@
         bajo ? 'Esto **sugiere anemia**, pero solo tu médico puede confirmarlo y decirte el tratamiento (por ejemplo, un suplemento con la dosis correcta). Llévale tu resultado.' : 'Aun así, sigue comiendo alimentos con hierro y repite el control cuando te lo indiquen.'
       ];
       if (valor < 7) textos.unshift('⚠️ Un valor tan bajo **requiere atención médica pronto**. Por favor acude a tu centro de salud lo antes posible.');
-      return r({ texto: textos, chips: bajo ? ['¿Qué debo comer?', 'Programar control', '¿Qué hago con los suplementos?'] : ['¿Qué debo comer?'], base: 'Valores de corte de la OMS a nivel del mar; en zonas de altura se ajustan', tema: 'hemoglobina' });
+      return r({ texto: textos, chips: bajo ? ['¿Qué debo comer?', '¿Dónde me hago el examen?', '¿Qué hago con los suplementos?'] : ['¿Qué debo comer?'], base: 'Valores de corte de la OMS a nivel del mar; en zonas de altura se ajustan', tema: 'hemoglobina' });
     }
 
     function capacidades() {
       ctx.ultimoTema = 'capacidades';
       return r({
-        texto: ['Soy **Ferri**, el asistente de MyFitnessPal. Puedo:'],
-        lista: ['Explicarte tu resultado del test con palabras simples.', 'Decirte qué hacer según tu semáforo.', 'Actualizar tu test si me cuentas otro síntoma (siempre te pregunto antes).', 'Interpretar tu valor de hemoglobina si ya te hiciste el examen.', 'Recomendarte alimentos con hierro y menús baratos.', 'Escucharte por voz 🎤 y leerte mis respuestas 🔊.'],
-        chips: ['Explícame mi resultado', '¿Qué debo comer?', 'Mi hemoglobina es 11.5'],
+        texto: ['Soy **Ferri**, el asistente de MyFitnessPal. **Solo respondo dudas sobre anemia y hierro.** Puedo:'],
+        lista: ['Explicarte palabras como **mg**, **meta de 18 mg**, **absorción** o **hierro hemínico**.', 'Explicarte tu resultado del test de síntomas con palabras simples.', 'Interpretar tu valor de hemoglobina si ya te hiciste el examen.', 'Contarte qué alimentos tienen hierro y cómo absorberlo mejor.'],
+        chips: ['¿Qué significa mg?', '¿Qué es la meta de 18 mg?', 'Explícame mi resultado'],
         base: 'Información general del MINSA y la OMS · No soy un médico'
       });
     }
@@ -354,10 +357,10 @@
     function noEntendi(puntajes) {
       ctx.fallos++;
       const sugerencias = Object.entries(puntajes).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([i]) => CHIP_INTENCION[i]).filter(Boolean);
-      const base = sugerencias.concat(['Explícame mi resultado', '¿Qué hago ahora?', '¿Qué debo comer?']).slice(0, 3);
+      const base = Array.from(new Set(sugerencias.concat(['¿Qué significa mg?', '¿Qué es la meta de 18 mg?', 'Explícame mi resultado']))).slice(0, 3);
       const textos = ctx.fallos >= 2
         ? ['Perdón, sigo sin entenderte bien 😅. Prueba con frases cortas como “¿qué significa amarillo?” o toca una de estas opciones:']
-        : [sugerencias.length ? 'No estoy seguro de haberte entendido. ¿Quisiste decir alguna de estas?' : 'Mmm, no estoy seguro de entender. Sé de anemia, del test de síntomas, la hemoglobina y alimentos con hierro. ¿Te refieres a algo de esto?'];
+        : [sugerencias.length ? 'No estoy seguro de haberte entendido. ¿Quisiste decir alguna de estas?' : 'Mmm, no estoy seguro de entender. **Solo respondo dudas sobre anemia y hierro** (mg, la meta de 18 mg, absorción, hemoglobina, el test de síntomas). ¿Te refieres a algo de esto?'];
       return r({ texto: textos, chips: Array.from(new Set(base)), base: 'No encontré una intención clara en tu mensaje, así que prefiero preguntarte antes que inventar' });
     }
 
@@ -365,7 +368,7 @@
       explicar_resultado: 'Explícame mi resultado', razon_resultado: '¿Por qué salió ese color?', que_hacer: '¿Qué hago ahora?',
       examen: '¿Dónde me hago el examen?', hemoglobina: '¿Qué es la hemoglobina?', hierro: '¿Qué es el hierro?', anemia: '¿Qué es la anemia?',
       alimentos: '¿Qué debo comer?', absorcion: '¿Cómo absorbo mejor el hierro?', suplemento: '¿Qué hago con los suplementos?',
-      programar_control: 'Programar control', menus: 'Ver menús baratos', confianza: '¿Puedo confiar en el test?',
+      mg: '¿Qué significa mg?', meta: '¿Qué es la meta de 18 mg?', heminico: '¿Qué es hierro hemínico?', confianza: '¿Puedo confiar en el test?',
       privacidad: '¿Guardas mis datos?', riesgo: '¿Quiénes tienen más riesgo?', capacidades: '¿Qué puedes hacer?'
     };
 
@@ -474,6 +477,8 @@
         const s = seguir('porque'); if (s) return s;
       }
       if ((intencion === 'anemia' || intencion === 'diagnostico') && /(tengo anemia|soy anemic|estoy enferm)/.test(n)) intencion = 'diagnostico';
+      // "qué significa 6 mg" habla de la unidad, no del resultado del test
+      if (/\bmg\b|miligramo/.test(n) && ['explicar_resultado', 'alimentos', 'hierro', 'mg', 'meta'].includes(intencion)) intencion = /(meta|18 ?mg|al dia|diari)/.test(n) ? 'meta' : 'mg';
       if (intencion === 'explicar_resultado' && /(por que|razon|motivo)/.test(n)) intencion = 'razon_resultado';
       if (intencion === 'hemoglobina' && /(valor|normal|rango|cuanto debe)/.test(n)) return responderTema('hemoglobina', 'mas');
       if (intencion === 'examen' && /(ayunas|cuesta|precio|gratis|duele)/.test(n)) return responderTema('examen', 'mas');
@@ -484,7 +489,7 @@
         case 'despedida':
           return r({ texto: ['¡Cuídate mucho! 💚 Recuerda: si tu semáforo salió amarillo o rojo, el examen de hemoglobina es el siguiente paso. Aquí estaré si me necesitas.'], chips: [] });
         case 'gracias':
-          return r({ texto: ['¡De nada! 😊 ¿Hay algo más que quieras saber?'], chips: ['¿Qué debo comer?', 'Programar control'] });
+          return r({ texto: ['¡De nada! 😊 ¿Hay algo más que quieras saber?'], chips: ['¿Qué significa mg?', '¿Qué debo comer?'] });
         case 'identidad':
           return r({ texto: ['Soy **Ferri**, un asistente automático (inteligencia artificial conversacional) de MyFitnessPal. **No soy una persona ni un médico.** Respondo con información general del MINSA y la OMS, y siempre te digo en qué me baso.'], chips: ['¿Qué puedes hacer?', '¿Puedo confiar en el test?'], base: 'Transparencia: sabes con quién hablas' });
         case 'capacidades': return capacidades();
@@ -497,7 +502,7 @@
         case 'hierro': return /(cuanto|necesito)/.test(n) ? responderTema('hierro', 'mas') : responderTema('hierro');
         case 'diagnostico':
           if (!ctx.resultado) return r({ texto: ['No puedo diagnosticarte, pero sí ayudarte a orientarte. Haz el test de síntomas y te explico qué significa tu resultado. Solo un **examen de hemoglobina** confirma la anemia.'], acciones: [{ tipo: 'ir', destino: '#test-sintomas', etiqueta: 'Ir al test' }], chips: ['¿Dónde me hago el examen?'] });
-          return r({ texto: ['Con honestidad: **no lo sé, y el test tampoco puede saberlo**. Tu semáforo en **' + ESTADOS[ctx.resultado.estado].color + '** dice que ' + (ctx.resultado.estado === 'estado-verde' ? 'no hay señales claras.' : 'hay señales que conviene revisar.') + ' La única forma de saberlo es un **examen de hemoglobina**.'], chips: ['¿Dónde me hago el examen?', 'Programar control', '¿Ya tengo mi valor de hemoglobina?'], base: 'El test cuenta síntomas; no mide la sangre', tema: 'examen' });
+          return r({ texto: ['Con honestidad: **no lo sé, y el test tampoco puede saberlo**. Tu semáforo en **' + ESTADOS[ctx.resultado.estado].color + '** dice que ' + (ctx.resultado.estado === 'estado-verde' ? 'no hay señales claras.' : 'hay señales que conviene revisar.') + ' La única forma de saberlo es un **examen de hemoglobina**.'], chips: ['¿Dónde me hago el examen?', '¿Dónde me hago el examen?', '¿Ya tengo mi valor de hemoglobina?'], base: 'El test cuenta síntomas; no mide la sangre', tema: 'examen' });
         case 'sintoma_info':
           if (ctx.resultado && ctx.resultado.sintomas.length) return explicarResultado('mas');
           return responderTema('test');
@@ -513,9 +518,12 @@
         case 'valor_hb':
           return r({ texto: ['Si ya tienes tu resultado, escríbeme el número. Por ejemplo: “mi hemoglobina es 11.5”.'], chips: ['Mi hemoglobina es 11.5', 'Aún no me hago el examen'] });
         case 'programar_control':
-          return r({ texto: ['¡Buena idea! Te llevo al formulario de **Recordatorios** con “Control de hemoglobina” ya elegido. Solo completa la frecuencia y la hora.'], acciones: [{ tipo: 'control', etiqueta: 'Programar control de hemoglobina' }], chips: ['¿Dónde me hago el examen?'] });
+          return r({ texto: ['Los recordatorios no los programo yo 🙂: están en la sección **Recordatorios** de la página, donde además puedes **dictarlos por voz**.', 'Lo mío son las dudas sobre anemia y hierro. Por ejemplo, ¿sabes qué examen te conviene recordar?'], chips: ['¿Dónde me hago el examen?', '¿Qué es la hemoglobina?'], base: 'Ferri solo resuelve dudas; cada sección de la web tiene su propia herramienta' });
         case 'menus':
-          return r({ texto: ['En **Menús por presupuesto** tienes 3 menús ricos en hierro desde **S/ 10** al día (lentejas, sangrecita, hígado…).'], acciones: [{ tipo: 'ir', destino: '#menus', etiqueta: 'Ver menús' }], chips: ['¿Cómo absorbo mejor el hierro?'] });
+          return r({ texto: ['Los menús los encuentras en la sección **Menús por presupuesto**, donde puedes filtrarlos según tus gustos.', 'Yo te puedo explicar lo que ves ahí, por ejemplo qué significa que un plato tenga **6 mg** de hierro.'], chips: ['¿Qué significa mg?', '¿Qué es la meta de 18 mg?'], base: 'Ferri solo resuelve dudas; cada sección de la web tiene su propia herramienta' });
+        case 'mg': return responderTema('mg');
+        case 'meta': return responderTema('meta');
+        case 'heminico': return responderTema('absorcion', 'mas');
         case 'preocupacion': {
           const e = ctx.resultado ? ESTADOS[ctx.resultado.estado] : null;
           return r({ texto: ['Es normal preocuparse 💚. Te cuento algo que te puede tranquilizar: **la anemia por falta de hierro es muy común y se puede tratar**.', e ? 'Tu semáforo en ' + e.color + ' no es un diagnóstico; es una señal para ' + (ctx.resultado.estado === 'estado-verde' ? 'seguir cuidándote.' : 'hacerte un examen sencillo y salir de dudas.') : 'Un examen sencillo de hemoglobina te saca de dudas.'], chips: ['¿Qué hago ahora?', '¿Dónde me hago el examen?'], base: 'Información general del MINSA' });
@@ -558,7 +566,7 @@
       explicarResultado: () => { const o = explicarResultado(); ctx.ultimaRespuesta = o; return o; },
       bienvenida() {
         if (ctx.resultado) return r({ texto: ['¡Hola! Soy **Ferri** 👋. Vi tu resultado del test. ¿Quieres que te lo explique con palabras simples?'], chips: ['Sí, explícame mi resultado', '¿Qué hago ahora?', '¿Qué puedes hacer?'] });
-        return r({ texto: ['¡Hola! Soy **Ferri** 👋, el asistente de MyFitnessPal. Te ayudo a entender el **test de síntomas**, tu hemoglobina y qué comer para cuidar tu hierro.', 'Puedes escribirme o hablarme con el micrófono 🎤.'], chips: ['¿Cómo funciona el test?', 'Tengo cansancio y mareos', '¿Qué puedes hacer?'] });
+        return r({ texto: ['¡Hola! Soy **Ferri** 👋, el asistente de MyFitnessPal. Resuelvo **dudas sobre anemia y hierro**: qué significa “mg”, la meta de 18 mg, la absorción, tu resultado del test…', 'Escríbeme tu pregunta. Recuerda que **no reemplazo a un médico**.'], chips: ['¿Qué significa mg?', '¿Qué es la meta de 18 mg?', '¿Qué es la absorción?'] });
       },
       reiniciar() { ctx.ultimoTema = null; ctx.pendiente = null; ctx.nivel = 'normal'; ctx.fallos = 0; ctx.ultimaRespuesta = null; },
       volverNivelNormal() { ctx.nivel = 'normal'; },

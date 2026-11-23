@@ -55,13 +55,22 @@ const casos = [
   { test: null, dice: ['la betarraga sirve para la anemia?'], espera: /mito/ },
   { test: null, dice: ['qué alimento tiene más hierro'], espera: /Sangrecita/ },
   { test: null, dice: ['el café con la comida está mal?'], espera: /té, el café/ },
-  { test: null, dice: ['menus baratos'], espera: /S\/ 10/ },
-  { test: null, dice: ['tengo poco dinero para comer'], espera: /S\/ 10|sangrecita/ },
+  { test: null, dice: ['menus baratos'], espera: /sección \*\*Menús/ },
+  { test: null, dice: ['tengo poco dinero para comer'], espera: /Menús/ },
+  // --- Glosario (problema: términos sin explicar) ---
+  { test: null, dice: ['qué significa mg'], espera: /miligramo/ },
+  { test: null, dice: ['qué significa que un plato tenga 6 mg'], espera: /miligramo/ },
+  { test: null, dice: ['que es la meta de 18 mg?'], espera: /mujer adulta necesita al día/ },
+  { test: null, dice: ['por qué la meta es 18 mg al día'], espera: /18 mg/ },
+  { test: null, dice: ['qué es la absorción'], espera: /vitamina C/ },
+  { test: null, dice: ['qué es el hierro hemínico'], espera: /hemínico/ },
+  { test: null, dice: ['qué significa mg', 'no entiendo'], espera: /medida muy pequeña/ },
+  { test: null, dice: ['qué significa mg', 'por qué'], espera: /grano de arroz/ },
   { test: null, dice: ['puedo tomar pastillas de hierro?'], espera: /solo si un profesional/ },
   { test: null, dice: ['qué es la anemia'], espera: /ferropénica/ },
   { test: null, dice: ['quiénes tienen más riesgo'], espera: /gestantes/ },
   // --- Acciones ---
-  { test: ['cansancio', 'mareos'], dice: ['quiero programar un recordatorio'], espera: /Recordatorios/ },
+  { test: ['cansancio', 'mareos'], dice: ['quiero programar un recordatorio'], espera: /no los programo yo/ },
   { test: null, dice: ['quiero hacer el test de nuevo'], espera: /Te llevo al test/ },
   // --- Transparencia / confianza / privacidad ---
   { test: null, dice: ['eres humano?'], espera: /No soy una persona ni un médico/ },
@@ -80,7 +89,7 @@ const casos = [
   { test: null, dice: ['chau'], espera: /Cuídate/ },
   // --- Recuperación ante errores (no inventa) ---
   { test: null, dice: ['asdfgh'], espera: /no estoy seguro/i },
-  { test: null, dice: ['cuál es la capital de Francia'], espera: /no estoy seguro/i },
+  { test: null, dice: ['cuál es la capital de Francia'], espera: /Solo respondo dudas sobre anemia y hierro/ },
   { test: null, dice: ['xyz', 'qwe'], espera: /sigo sin entenderte/ },
   { test: null, dice: ['quiero un nuevo test'], espera: /Te llevo al test/ },
 ];

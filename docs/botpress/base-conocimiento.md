@@ -33,7 +33,7 @@ Por qué sale este color: El test cuenta cuántos síntomas marcaste. Desde 2 s�
 Qué hacer:
 - Hazte un examen de hemoglobina en las próximas semanas (es rápido: un pinchazo en el dedo).
 - Mientras tanto, come más alimentos con hierro y acompáñalos con limón o naranja.
-- Puedes programar un recordatorio para no olvidarlo.
+- Para no olvidarlo, usa la sección Recordatorios de la página.
 
 ### Semáforo rojo (4 o 5 síntomas)
 
@@ -46,7 +46,7 @@ Por qué sale este color: El test cuenta cuántos síntomas marcaste. Desde 4 s�
 Qué hacer:
 - Hazte un examen de hemoglobina lo antes posible y consulta a un profesional de salud.
 - No tomes pastillas de hierro por tu cuenta: primero confirma con el examen.
-- Programa ahora un recordatorio para tu control.
+- Para no olvidarlo, usa la sección Recordatorios de la página.
 
 ## Los 5 síntomas del test y su relación con la anemia
 
@@ -79,6 +79,22 @@ También puede deberse a: usar mucho detergente o esmalte, o lavarte las manos m
 Si al cerebro le llega menos oxígeno, puede aparecer dolor de cabeza frecuente.
 
 También puede deberse a: estrés, pantallas, poca agua o dormir mal.
+
+## Qué significa mg
+
+mg significa miligramo: la milésima parte de un gramo. El hierro se necesita en cantidades muy pequeñas, por eso se mide en mg. Por ejemplo, “Hierro: 6 mg” en un menú quiere decir que ese plato te da 6 miligramos de hierro.
+
+Un gramo tiene 1000 mg. Toda la meta diaria de una mujer adulta (18 mg) es menos de 2 centésimas de gramo, y aun así es muy importante.
+
+Fuente: Sistema Internacional de Unidades
+
+## La meta de 18 mg
+
+La meta de 18 mg es la cantidad aproximada de hierro que una mujer adulta necesita al día. El semáforo de hierro de la página suma el hierro de lo que comes y lo compara con esa meta: rojo si vas por menos de la mitad, amarillo si pasaste la mitad y verde cuando llegas a 18 mg.
+
+La meta cambia según la persona: un varón adulto necesita unos 8 mg al día y una gestante unos 27 mg. Tu médico o nutricionista puede decirte la tuya.
+
+Fuente: OMS / MINSA, recomendaciones diarias de hierro
 
 ## Hemoglobina
 
@@ -148,7 +164,7 @@ Fuente: OMS / MINSA
 
 Tranquilo o tranquila: no guardo nada en ningún servidor. Tus respuestas del test y esta conversación solo viven en esta pestaña del navegador y se borran al cerrarla. Puedes borrar la conversación cuando quieras con el botón ↺.
 
-Si usas el micrófono, el reconocimiento de voz lo hace tu propio navegador (por ejemplo Chrome). Si no quieres usarlo, puedes escribir.
+Ferri funciona solo con texto y dentro de tu navegador: no hay servidores que reciban lo que escribes.
 
 Fuente: Política de la demo
 

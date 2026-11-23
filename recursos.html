@@ -17,6 +17,13 @@
   <script src="js/ferri-conocimiento.js" defer></script>
   <script src="js/ferri-motor.js" defer></script>
   <script src="js/ferri-chat.js" defer></script>
+  <!-- S14 · Mejoras de cada integrante -->
+  <link rel="stylesheet" href="css/mejoras.css">
+  <script src="js/video-gestos.js" defer></script>
+  <!-- S14 · Interfaz adaptativa (va al final para poder ajustar todos los estilos) -->
+  <link rel="stylesheet" href="css/adaptativo.css">
+  <script src="js/apariencia-temprano.js"></script>
+  <script src="js/apariencia.js" defer></script>
 </head>
 
 <body>
@@ -58,7 +65,25 @@
     <section class="dos-columnas" aria-labelledby="video-titulo">
       <div>
         <!-- PASO 9: video de referencia. El enlace alternativo siempre está disponible. -->
-        <video src="videos/videoplayback.mp4"  width="100%" controls ></video>
+        <!-- S14 · Mejora con GESTOS y teclado (js/video-gestos.js) -->
+        <video src="videos/videoplayback.mp4" width="100%" controls playsinline data-gestos></video>
+        <details class="atajos" open>
+          <summary>Gestos y atajos del video</summary>
+          <div class="atajos-columnas">
+            <ul>
+              <li><strong>Doble toque</strong> a la izquierda o derecha: −10 s / +10 s</li>
+              <li><strong>Un toque</strong> en el centro: reproducir o pausar</li>
+              <li><strong>Mantener presionado</strong>: velocidad 2× mientras lo mantienes</li>
+              <li><strong>Doble toque</strong> en el centro: pantalla completa</li>
+            </ul>
+            <ul>
+              <li><kbd>K</kbd> o <kbd>Espacio</kbd> reproducir / pausar · <kbd>J</kbd> <kbd>L</kbd> −10 / +10 s</li>
+              <li><kbd>←</kbd> <kbd>→</kbd> −5 / +5 s · <kbd>↑</kbd> <kbd>↓</kbd> volumen</li>
+              <li><kbd>M</kbd> silencio · <kbd>F</kbd> pantalla completa</li>
+              <li><kbd>&lt;</kbd> <kbd>&gt;</kbd> velocidad · <kbd>0</kbd>–<kbd>9</kbd> ir al 0–90 %</li>
+            </ul>
+          </div>
+        </details>
         <p class="nota">Video general sobre los ODS de UNESCO en español. No presenta el servicio ficticio de
           MyFitnessPal.</p>
         <p><a href="https://www.youtube.com/watch?v=MCKH5xk8X-g" target="_blank" rel="noopener noreferrer">Abrir el

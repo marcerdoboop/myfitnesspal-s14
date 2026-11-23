@@ -11,7 +11,7 @@ for (const e of Object.values(K.ESTADOS)) {
 }
 md += '## Los 5 síntomas del test y su relación con la anemia\n\n';
 for (const s of Object.values(K.SINTOMAS)) md += `### ${s.nombre[0].toUpperCase() + s.nombre.slice(1)}\n\n${s.explicacion}\n\nTambién puede deberse a: ${s.otrasCausas}.\n\n`;
-const titulos = { hemoglobina: 'Hemoglobina', hierro: 'Hierro', anemia: 'Anemia ferropénica', examen: 'Examen de hemoglobina', absorcion: 'Cómo absorber mejor el hierro', alimentos: 'Alimentos con hierro', suplemento: 'Suplementos de hierro', riesgo: 'Grupos de riesgo', privacidad: 'Privacidad' };
+const titulos = { mg: 'Qué significa mg', meta: 'La meta de 18 mg', hemoglobina: 'Hemoglobina', hierro: 'Hierro', anemia: 'Anemia ferropénica', examen: 'Examen de hemoglobina', absorcion: 'Cómo absorber mejor el hierro', alimentos: 'Alimentos con hierro', suplemento: 'Suplementos de hierro', riesgo: 'Grupos de riesgo', privacidad: 'Privacidad' };
 for (const [k, t] of Object.entries(titulos)) {
   const x = K.TEMAS[k];
   md += `## ${t}\n\n${limpio(x.texto)}\n\n${limpio(x.mas)}\n\nFuente: ${x.fuente}\n\n`;

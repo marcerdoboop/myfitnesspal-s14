@@ -64,14 +64,14 @@
       color: 'amarillo', emoji: '🟡', rango: '2 o 3 síntomas',
       significado: 'Tienes **algunas señales** que suelen aparecer con la anemia. **No significa que tengas anemia**: significa que vale la pena confirmarlo con un examen de hemoglobina.',
       simple: 'Amarillo = atención. Puede ser anemia o no. Un examen de sangre rápido te lo dice.',
-      hacer: ['Hazte un examen de hemoglobina en las próximas semanas (es rápido: un pinchazo en el dedo).', 'Mientras tanto, come más alimentos con hierro y acompáñalos con limón o naranja.', 'Puedes programar un recordatorio para no olvidarlo.'],
+      hacer: ['Hazte un examen de hemoglobina en las próximas semanas (es rápido: un pinchazo en el dedo).', 'Mientras tanto, come más alimentos con hierro y acompáñalos con limón o naranja.', 'Para no olvidarlo, usa la sección Recordatorios de la página.'],
       porque: 'El test cuenta cuántos síntomas marcaste. Desde 2 síntomas a la vez sale amarillo, porque es menos probable que sea solo casualidad.'
     },
     'estado-rojo': {
       color: 'rojo', emoji: '🔴', rango: '4 o 5 síntomas',
       significado: 'Tienes **muchas señales a la vez** que suelen aparecer con la anemia. Aun así, **solo un examen puede confirmarlo**. Lo recomendable es hacerte el examen de hemoglobina pronto.',
       simple: 'Rojo = no lo dejes pasar. Ve a tu centro de salud y pide un examen de hemoglobina pronto.',
-      hacer: ['Hazte un examen de hemoglobina lo antes posible y consulta a un profesional de salud.', 'No tomes pastillas de hierro por tu cuenta: primero confirma con el examen.', 'Programa ahora un recordatorio para tu control.'],
+      hacer: ['Hazte un examen de hemoglobina lo antes posible y consulta a un profesional de salud.', 'No tomes pastillas de hierro por tu cuenta: primero confirma con el examen.', 'Para no olvidarlo, usa la sección Recordatorios de la página.'],
       porque: 'El test cuenta cuántos síntomas marcaste. Desde 4 síntomas sale rojo: cuando aparecen varios juntos, la probabilidad de anemia es mayor.'
     }
   };
@@ -115,6 +115,20 @@
       porque: 'Te lo recomiendo porque el test solo **cuenta síntomas**; el examen es lo único que **mide** tu hemoglobina de verdad.',
       mas: '**Casi no duele**: es un pinchazo rápido en el dedo, como una picadura, y dura segundos. Normalmente no necesitas ir en ayunas para un examen de hemoglobina simple, pero confírmalo en tu centro de salud. En niños menores de 5 años y gestantes suele ser gratuito en el MINSA. Si tienes dudas puedes llamar a la Línea 113 (MINSA).',
       fuente: 'MINSA · Línea 113'
+    },
+    mg: {
+      texto: '**mg** significa **miligramo**: la milésima parte de un gramo. El hierro se necesita en cantidades muy pequeñas, por eso se mide en mg. Por ejemplo, “Hierro: 6 mg” en un menú quiere decir que ese plato te da 6 miligramos de hierro.',
+      simple: 'mg es una medida muy pequeña de peso. “6 mg de hierro” = ese plato te da 6 unidades de las 18 que necesitas al día.',
+      porque: 'Se usa mg porque el cuerpo necesita poquito hierro: 18 mg al día pesan menos que un grano de arroz.',
+      mas: 'Un gramo tiene 1000 mg. Toda la meta diaria de una mujer adulta (18 mg) es menos de 2 centésimas de gramo, y aun así es muy importante.',
+      fuente: 'Sistema Internacional de Unidades'
+    },
+    meta: {
+      texto: 'La **meta de 18 mg** es la cantidad aproximada de **hierro que una mujer adulta necesita al día**. El semáforo de hierro de la página suma el hierro de lo que comes y lo compara con esa meta: **rojo** si vas por menos de la mitad, **amarillo** si pasaste la mitad y **verde** cuando llegas a 18 mg.',
+      simple: 'Es cuánto hierro necesitas en un día: 18 mg. El semáforo te dice si ya llegaste.',
+      porque: 'Usamos 18 mg porque las mujeres en edad fértil son el grupo con más riesgo y la cifra más usada como referencia.',
+      mas: 'La meta cambia según la persona: un varón adulto necesita unos 8 mg al día y una gestante unos 27 mg. Tu médico o nutricionista puede decirte la tuya.',
+      fuente: 'OMS / MINSA, recomendaciones diarias de hierro'
     },
     hierro: {
       texto: 'El **hierro** es un mineral que tu cuerpo necesita para fabricar **hemoglobina**, la parte de la sangre que lleva oxígeno a todo el cuerpo. Tu cuerpo no lo produce: **lo obtienes de lo que comes**.',
@@ -162,7 +176,7 @@
       texto: 'Tranquilo o tranquila: **no guardo nada** en ningún servidor. Tus respuestas del test y esta conversación solo viven en esta pestaña del navegador y se borran al cerrarla. Puedes borrar la conversación cuando quieras con el botón **↺**.',
       simple: 'No guardo tus datos. Todo se borra al cerrar la página.',
       porque: 'Hablamos de salud, que es información sensible; por eso Ferri funciona dentro de tu navegador.',
-      mas: 'Si usas el micrófono, el reconocimiento de voz lo hace tu propio navegador (por ejemplo Chrome). Si no quieres usarlo, puedes escribir.',
+      mas: 'Ferri funciona solo con texto y dentro de tu navegador: no hay servidores que reciban lo que escribes.',
       fuente: 'Política de la demo'
     },
     test: {

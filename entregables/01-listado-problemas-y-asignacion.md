@@ -1,36 +1,27 @@
 # Paso 1 · Listado de problemas y asignación de mejoras
 
 **Solución:** MyFitnessPal, una web para prevenir y controlar la anemia ferropénica (ODS 3).
-**Público objetivo:** estudiantes, madres y familias peruanas con poco tiempo y presupuesto.
+**Público objetivo:** estudiantes, madres y familias peruanas que usan sobre todo el celular, con poco tiempo y presupuesto. Incluye personas mayores.
 
-> **Origen de los hallazgos.** El equipo no realizó la Semana 13 (pruebas con usuarios + SUS). Este listado combina:
-> (a) el problema que reportaron los usuarios con el test de síntomas: *"no entendían el resultado"*;
-> (b) una revisión heurística de la versión desplegada (heurísticas de Nielsen), hecha recorriendo las tareas principales.
-> Si el equipo tiene datos de la Semana 11 o hace una mini-prueba con SUS, deben reemplazar o completar la columna **Evidencia**.
+> **Origen de los hallazgos.** El equipo no realizó la Semana 13 (pruebas con usuarios + SUS). Los problemas vienen de la revisión de la versión publicada recorriendo las tareas principales, y de lo que comentaron los usuarios. Si tienen datos de la Semana 11 o hacen una mini-prueba con SUS, agréguenlos en la columna **Evidencia**.
+
+## Problemas y mejoras (una por integrante)
+
+| # | Sección | Problema de usabilidad | Heurística de Nielsen | Mejora con IA / interfaz emergente | Principios HAI | Responsable |
+|---|---|---|---|---|---|---|
+| 1 | Recordatorios (`#contacto`) | El formulario pide 5 campos y un checkbox; es incómodo en el celular. | H7 Flexibilidad y eficiencia | **Voz** (única mejora con voz): dictar "suplemento de hierro, todos los días, a las 8" y que el formulario se rellene; el usuario corrige antes de enviar. | Control del usuario · Recuperación ante errores | *(Integrante 1)* |
+| 2 | Toda la web (componente flotante) | Términos como "mg", "meta de 18 mg" o "absorción" no se explican y no hay a quién preguntar. | H2 Lenguaje del usuario · H10 Ayuda | **Asistente conversacional por texto (Ferri)**: solo responde dudas sobre anemia y hierro. No recomienda menús ni programa recordatorios, para no invadir las otras mejoras. | Transparencia (no reemplaza al médico) · Confianza | *(Integrante 2)* |
+| 3 | Menús (`#menus`) | Los menús son iguales para todos y no consideran gustos ni restricciones (no come hígado, es vegetariano). | H7 Flexibilidad · H2 | **Recomendaciones personalizadas**: filtros de preferencia y "¿Por qué te lo recomendamos?". | Transparencia · Control del usuario | *(Integrante 3)* |
+| 4 | Video y guía (`recursos.html`) | El video solo se controla con los botones pequeños del reproductor. | H7 Flexibilidad · H3 Control y libertad | **Gestos** táctiles y teclado (sin voz): doble toque ±10 s, mantener presionado = 2×, atajos de teclado y aviso visible de cada acción. | Control del usuario · Retroalimentación | *(Integrante 4)* |
+| 5 | Semáforo de hierro (`#orientador`) | Solo se puede elegir entre 3 casos fijos; no se puede registrar lo que se comió. | H1 Visibilidad del estado · H2 | **Reconocimiento de imágenes**: subir una foto del plato y estimar su hierro (detección aproximada por colores y por el nombre del archivo). | Transparencia (qué detectó y con qué confianza) · Recuperación ante errores (corregir el alimento) | *(Integrante 5)* |
+| 6 | Apariencia de toda la web | Texto pequeño y denso; el contraste cansa con poca luz o a usuarios mayores. | H8 Diseño estético y minimalista · Accesibilidad | **Interfaz adaptativa**: detecta modo claro/oscuro, reducción de movimiento y tamaño de texto del sistema; panel con A− / A+ y modo oscuro. | Control del usuario · Accesibilidad | *(Integrante 6)* |
+
+**Criterio de asignación (Team Leader):** impacto × viabilidad. Cada mejora vive en su propia sección y archivo, para que el responsable de integración pueda unirlas sin que choquen. Además, cada una usa una tecnología distinta: voz solo en Recordatorios, texto en Ferri, gestos en el video, imágenes en el Semáforo.
 
 ## Tareas usadas para revisar la web
-1. Hacer el test de síntomas y decir qué significa el resultado.
-2. Encontrar un menú rico en hierro de S/ 10.
-3. Programar un recordatorio para el control de hemoglobina.
-
-## Problemas y oportunidades de mejora
-
-| # | Problema observado | Evidencia | Heurística de Nielsen | Impacto | Viabilidad | Mejora con IA / interfaz emergente |
-|---|---|---|---|---|---|---|
-| **P1** | **Los usuarios no entienden el resultado del test de síntomas.** Ven "Semáforo en amarillo" pero no saben qué significa, si tienen anemia, por qué salió ese color ni qué hacer. | Reportado por los usuarios. El resultado solo muestra el conteo y una frase; no hay escala ni ayuda. | H2 Relación con el mundo real · H10 Ayuda y documentación · H1 Visibilidad del estado | **Alto**: es la HU que orienta una decisión de salud | Alta | **Asistente conversacional (Ferri)** con contexto del test, voz y explicación en palabras simples |
-| P2 | El semáforo diario de hierro usa casos fijos de ejemplo; el usuario no sabe cómo registrar lo que comió. | Revisión heurística: los radios "Poco hierro / Más o menos / Meta cumplida" no dependen del usuario. | H1 Visibilidad · H2 Mundo real | Alto | Media | Reconocimiento de imágenes: foto del plato → estimar hierro |
-| P3 | "Agregar al diario" (en Menús) solo lleva al semáforo y no suma nada, lo que confunde. | Revisión heurística: el botón promete una acción que no ocurre. | H1 Visibilidad · H4 Consistencia | Medio | Alta | Recomendaciones personalizadas según presupuesto y preferencias |
-| P4 | Programar un recordatorio exige completar 6 campos y ver una página de confirmación aparte. | Revisión heurística: tarea 3. | H7 Flexibilidad y eficiencia · H5 Prevención de errores | Medio | Media | Comando de voz: "recuérdame mi suplemento a las 8" |
-| P5 | El menú "Resolver" no dice qué contiene; cuesta encontrar el test y los menús. | Revisión heurística: hay que abrir el desplegable para descubrir las opciones. | H6 Reconocer antes que recordar · H2 | Medio | Alta | Búsqueda por voz / renombrar a "Herramientas" |
-
-## Asignación (coordinada por el Team Leader)
-
-| Integrante | Rol | Problema asignado | Mejora |
-|---|---|---|---|
-| *(tu nombre)* | Desarrollo de la mejora P1 | **P1 · Resultado del test incomprensible** | Ferri, asistente conversacional multimodal (texto + voz) |
-| *(Integrante 2)* | | P2 | Reconocimiento de imágenes de alimentos |
-| *(Integrante 3)* | | P3 | Recomendaciones personalizadas |
-| *(Integrante 4)* | | P4 | Recordatorio por comando de voz |
-| *(Integrante 5)* | Responsable de integración | P5 | Navegación y búsqueda por voz |
-
-Criterio de priorización: **impacto × viabilidad**. P1 va primero porque afecta una decisión de salud (hacerse o no el examen) y se puede implementar completa en la sesión.
+1. Registrar lo que comí hoy y ver mi semáforo de hierro.
+2. Encontrar un menú vegetariano de S/ 15.
+3. Programar un recordatorio desde el celular.
+4. Adelantar el video 30 segundos desde el celular.
+5. Entender qué significa "Hierro: 6 mg".
+6. Leer la web de noche o con letra más grande.

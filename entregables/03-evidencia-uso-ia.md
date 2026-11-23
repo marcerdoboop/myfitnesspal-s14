@@ -1,73 +1,114 @@
-# Evidencia del uso de IA
+# Evidencia del uso de IA (prompts de cada integrante)
 
-La guía pide usar Gemini. El docente permitió usar otra IA, y en este trabajo se usó **Claude (Anthropic)** como asistente para analizar, proponer y desarrollar la mejora.
+La guía pide usar Gemini. El docente permitió usar otra IA; en este trabajo se usó **Claude (Anthropic)** para analizar, proponer y desarrollar las mejoras.
 
-> Si igual necesitas capturas de Gemini, copia el **prompt** de abajo en gemini.google.com, toma captura de la respuesta y compárala con lo que se implementó (sección 3).
+> **Para las capturas:** cada integrante copia **su** prompt en la IA (Claude o Gemini), toma captura del prompt y de la respuesta, y la compara con la tabla "Qué se aceptó o modificó".
 
-## 1. Prompt usado
-Incluye los 5 elementos que pide la guía de la Semana 14:
+Todos los prompts tienen los 5 elementos que pide la guía: **(1)** el problema, **(2)** el contexto y el público, **(3)** la mejora, **(4)** los principios HAI y **(5)** la interfaz emergente.
 
+**Contexto común (pegar al inicio de cada prompt):**
 ```text
-[1. PROBLEMA DE USABILIDAD]
-En las pruebas con usuarios de nuestra web "MyFitnessPal" (prevención de la anemia
-ferropénica), los usuarios NO ENTENDÍAN EL RESULTADO DEL TEST DE SÍNTOMAS. El test
-tiene 5 casillas (cansancio, mareos, palidez, uñas quebradizas, dolor de cabeza) y
-muestra un semáforo: 0–1 verde, 2–3 amarillo, 4–5 rojo, con una frase corta. Los
-usuarios preguntaban: "¿tengo anemia?", "¿por qué amarillo?", "¿qué hago ahora?".
-
-[2. CONTEXTO Y PÚBLICO OBJETIVO]
-Público: estudiantes, madres y familias peruanas, muchas con poco tiempo, presupuesto
-limitado y poca familiaridad con términos médicos. Usan principalmente el celular.
-La web es estática (HTML, CSS y JavaScript) publicada en GitHub Pages.
-
-[3. MEJORA QUE QUEREMOS IMPLEMENTAR]
-Un asistente conversacional inteligente que explique el resultado del test con
-palabras simples, responda preguntas de seguimiento y lleve a la acción (hacerse el
-examen de hemoglobina o programar un recordatorio).
-
-[4. PRINCIPIOS DE HUMAN-AI INTERACTION]
-Aplica: transparencia (que diga que es IA y en qué se basa), control del usuario
-(que no cambie nada sin permiso y se pueda deshacer), confianza (que no diagnostique
-ni invente) y recuperación ante errores (qué hace si no entiende o si falla).
-
-[5. INTERFAZ EMERGENTE]
-Evalúa incorporar voz (dictado y respuesta hablada) para hacerlo multimodal,
-pensando en usuarios que escriben con dificultad en el celular.
-
-Propón 2 o 3 alternativas, recomienda una viable para implementar hoy en una web
-estática y describe cómo implementarla.
+Somos estudiantes de HCI. Nuestra web "MyFitnessPal" (HTML, CSS y JavaScript, publicada en
+GitHub Pages, sin servidor) ayuda a prevenir la anemia ferropénica en Perú. Público: estudiantes,
+madres y familias con poco tiempo y presupuesto, que usan sobre todo el celular; también personas
+mayores. Propón 2 o 3 alternativas, recomienda una viable para hoy y explica cómo implementarla.
 ```
 
-## 2. Respuesta de la IA (resumen fiel)
+---
 
-**Alternativas propuestas:**
-| Alternativa | Ventaja | Desventaja |
-|---|---|---|
-| A. Más texto y una infografía fija en el resultado | Simple | No responde dudas distintas; textos largos que nadie lee |
-| B. **Asistente conversacional con el contexto del test** + voz | Responde la duda exacta, explica más simple si no se entiende y lleva a la acción | Más trabajo de desarrollo |
-| C. Chatbot de un proveedor externo (LLM en la nube) | Respuestas muy flexibles | Requiere cuenta y clave; en salud puede inventar ("alucinar"); los datos salen del navegador |
+### 1 · Voz en Recordatorios
+```text
+[1] Problema: el formulario de recordatorios pide 5 campos y un checkbox y es incómodo en el celular.
+[2] Público: el del contexto común, que programa el suplemento de hierro de su hijo o su control.
+[3] Mejora: dictar una frase ("suplemento de hierro, todos los días, a las 8") y rellenar el formulario.
+[4] Principios HAI: control del usuario (no enviar solo, poder corregir y deshacer) y recuperación
+    ante errores (qué pasa si no entiende la hora o el micrófono falla).
+[5] Interfaz emergente: reconocimiento de voz en español de Perú.
+```
+| Recomendación de la IA | Decisión |
+|---|---|
+| Web Speech API + intérprete de la frase | ✅ Aceptada |
+| Enviar el formulario automáticamente | ❌ Descartada: viola el control del usuario |
+| Hora que no existe en la lista → la más cercana, con aviso | ✅ Aceptada |
+| Escribir la frase si no hay micrófono | ✅ Aceptada (y permite probarlo en cualquier navegador) |
 
-**Recomendación de la IA:** la **B**, con un **motor conversacional propio** que corra en el navegador:
-- Clasificación de intenciones con tolerancia a errores de tipeo, extracción de entidades (síntomas, alimentos, valor de hemoglobina) y **memoria de contexto** para entender "¿por qué?", "más" o "no entiendo".
-- Respuestas revisadas, en varios niveles de dificultad y con fuente, para **no inventar** información de salud.
-- Conexión **opcional** a Botpress (LLM), con vuelta automática al motor local si falla.
-- Voz con la **Web Speech API** (es-PE), sin servicios de pago.
-- Ajustes complementarios en la caja del resultado: escala del semáforo y "En palabras simples".
+### 2 · Asistente conversacional por texto (Ferri)
+```text
+[1] Problema: términos como "mg", "meta de 18 mg" o "absorción" no se explican y no hay a quién preguntar.
+[2] Público: el del contexto común, con poca familiaridad con términos de nutrición.
+[3] Mejora: un chat flotante, solo de texto, que responda dudas sobre anemia y hierro.
+    No debe recomendar menús ni programar recordatorios (eso lo hacen otras secciones).
+[4] Principios HAI: transparencia (avisar que no reemplaza al médico y decir en qué se basa) y confianza
+    (no inventar, qué hacer ante una urgencia).
+[5] Interfaz emergente: asistente conversacional (texto).
+```
+| Recomendación de la IA | Decisión |
+|---|---|
+| Motor conversacional propio en el navegador, con respuestas revisadas | ✅ Aceptada: sin claves expuestas y sin "alucinaciones" en temas de salud |
+| LLM en la nube (Botpress) | 🔁 Modificada: queda como modo opcional |
+| Voz en el chat | ❌ Descartada: la voz es exclusiva de Recordatorios |
+| Botones "¿Qué significa mg?" junto a los términos | ✅ Aceptada |
 
-**Cómo aplicó cada principio HAI:** franja "Contexto que uso" y "¿En qué me baso?" (transparencia); confirmación antes de modificar el test, Deshacer, borrar conversación y apagar la voz (control); no diagnostica y deriva al 106 ante urgencias (confianza); opciones "¿Quisiste decir…?" y 👎 para explicar de otra forma (recuperación ante errores).
+### 3 · Recomendaciones personalizadas en Menús
+```text
+[1] Problema: los menús son iguales para todos y no consideran gustos ni restricciones
+    (no come hígado, es vegetariano).
+[2] Público: el del contexto común, con presupuesto de S/ 10 a S/ 20 al día.
+[3] Mejora: filtros de preferencia y recomendaciones con "por qué te lo recomendamos".
+[4] Principios HAI: transparencia (explicar cada recomendación y lo que se ocultó) y control del
+    usuario (cambiar o quitar filtros).
+[5] Interfaz emergente: recomendaciones personalizadas.
+```
+| Recomendación de la IA | Decisión |
+|---|---|
+| Filtrar por restricciones y ordenar por hierro dentro del presupuesto | ✅ Aceptada |
+| Explicación por menú (% de la meta, costo, preferencia cumplida, absorción) | ✅ Aceptada |
+| Aprender de los clics del usuario | ❌ Descartada: poco transparente para una demo |
+| Agregar menús vegetarianos para S/ 15 y S/ 20 | 🔁 Modificada: se agregaron 2, marcados "Nuevo" |
 
-## 3. Qué se aceptó, qué se modificó y qué se descartó
+### 4 · Gestos en el video
+```text
+[1] Problema: el video solo se controla con los botones pequeños del reproductor.
+[2] Público: el del contexto común, que ve el video en el celular.
+[3] Mejora: gestos táctiles y atajos de teclado (sin voz) para controlar el video.
+[4] Principios HAI: control del usuario y retroalimentación visible de cada acción.
+[5] Interfaz emergente: interacción por gestos.
+```
+| Recomendación de la IA | Decisión |
+|---|---|
+| Doble toque a los lados ±10 s, mantener = 2× | ✅ Aceptada |
+| Deslizar para cambiar el volumen | ❌ Descartada: choca con el desplazamiento de la página |
+| Atajos K/J/L, flechas, M, F | ✅ Aceptada; flechas y espacio solo con el video enfocado |
+| Aviso visible de cada acción | ✅ Aceptada; sin animación cuando la acción es por teclado |
 
-| Recomendación | Decisión | Motivo |
-|---|---|---|
-| Asistente conversacional con contexto del test | ✅ Aceptada | Ataca directamente el problema P1 |
-| Motor local por defecto | ✅ Aceptada | Funciona siempre en GitHub Pages, sin claves expuestas y sin enviar datos de salud |
-| Botpress (LLM) | 🔁 **Modificada**: queda como modo opcional | El equipo pidió Botpress; se dejó preparado (base de conocimiento + instrucciones + conexión) sin depender de él para la demo |
-| Voz (dictado + lectura) | ✅ Aceptada | Interfaz emergente multimodal; útil en el celular |
-| Reconocimiento de imágenes (foto del plato) | ❌ Descartada para P1 | No responde al problema del test; se propone para P2 |
-| Que Ferri cambie las casillas del test | 🔁 **Modificada**: solo con confirmación y con "Deshacer" | Control del usuario |
-| Indicador de "escribiendo…" largo | 🔁 **Modificada**: máximo 650 ms | Que se sienta natural sin hacer esperar (skills de Emil Kowalski) |
+### 5 · Reconocimiento de imágenes en el Semáforo
+```text
+[1] Problema: el semáforo de hierro solo deja elegir 3 casos fijos; no se puede registrar lo que comí.
+[2] Público: el del contexto común, que almuerza fuera o cocina en casa.
+[3] Mejora: subir una foto del plato y estimar su hierro (puede simularse con alimentos reconocibles).
+[4] Principios HAI: transparencia (qué detectó y con qué confianza) y recuperación ante errores
+    (corregir el alimento).
+[5] Interfaz emergente: reconocimiento de imágenes.
+```
+| Recomendación de la IA | Decisión |
+|---|---|
+| Modelo de visión en la nube | ❌ Descartada: requiere clave y la foto saldría del dispositivo |
+| Estimación por colores en el navegador + nombre del archivo | ✅ Aceptada como simulación declarada |
+| Mostrar confianza y "cómo lo dedujo" | ✅ Aceptada |
+| Corregir, quitar o agregar alimentos antes de sumar | ✅ Aceptada |
 
-## 4. Capturas
-- Prompt y respuesta: captura esta conversación con la IA (o la de Gemini si la haces).
-- Mejora implementada: ver `entregables/capturas/` y `02-mejora-individual-ferri.md`.
+### 6 · Interfaz adaptativa
+```text
+[1] Problema: el texto es pequeño y denso y el contraste cansa con poca luz o a personas mayores.
+[2] Público: el del contexto común, incluidas personas mayores.
+[3] Mejora: adaptar la web al dispositivo (modo oscuro, reducción de movimiento, tamaño de texto)
+    y dar un panel con A− / A+ y modo oscuro.
+[4] Principios HAI: control del usuario y accesibilidad.
+[5] Interfaz emergente: interfaz adaptativa.
+```
+| Recomendación de la IA | Decisión |
+|---|---|
+| Respetar `prefers-color-scheme` y `prefers-reduced-motion` | ✅ Aceptada |
+| Panel con A− / A+, Sistema / Claro / Oscuro y "Menos animaciones" | ✅ Aceptada |
+| Cambiar el tema solo según la hora | ❌ Descartada: el usuario pierde el control |
+| Mostrar "Detectamos en tu dispositivo" | ✅ Aceptada (transparencia) |

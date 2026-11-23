@@ -21,10 +21,5 @@ window.FERRI_CONFIG = {
       // 'https://cdn.botpress.cloud/webchat/vX.X/inject.js',
       // 'https://files.bpcontent.cloud/....js'
     ]
-  },
-
-  voz: {
-    idioma: 'es-PE',        // reconocimiento y lectura en español de Perú
-    leerRespuestas: false   // se activa solo si el usuario usa el micrófono o el botón 🔊
   }
 };

@@ -1,45 +1,57 @@
 # Pasos 3 y 4 · Integración, verificación y despliegue
 
-## Integración (responsable de integración)
-Cada integrante entrega sus archivos modificados y sus evidencias. Para la mejora **P1 (Ferri)**:
+## Integración
+Cada mejora vive en sus propios archivos. La integración solo agrega etiquetas en el `<head>` y el bloque de HTML de cada sección.
 
-**Archivos nuevos**
-- `js/ferri-config.js`, `js/ferri-conocimiento.js`, `js/ferri-motor.js`, `js/ferri-chat.js`
-- `css/ferri.css`
-- `tests/probar-ferri.js`, `tests/generar-kb-botpress.js`
-- `docs/BOTPRESS.md`, `docs/botpress/*`
+| # | Mejora | Archivos nuevos | HTML tocado |
+|---|---|---|---|
+| 1 | Voz en Recordatorios | `js/voz-recordatorio.js` | `index.html`: bloque `#dictado-recordatorio` dentro del formulario |
+| 2 | Ferri (texto) | `js/ferri-config.js`, `js/ferri-conocimiento.js`, `js/ferri-motor.js`, `js/ferri-chat.js`, `css/ferri.css` | `<head>` de las 3 páginas; botones `.ayuda-ferri` |
+| 3 | Menús personalizados | `js/menus-personalizados.js` | `index.html`: `#preferencias-menu` |
+| 4 | Gestos en el video | `js/video-gestos.js` | `recursos.html`: `data-gestos` en el `<video>` y la lista de atajos |
+| 5 | Foto del plato | `js/plato-foto.js` | `index.html`: `#mi-plato` dentro de `#orientador` |
+| 6 | Interfaz adaptativa | `css/adaptativo.css`, `js/apariencia.js`, `js/apariencia-temprano.js` | `<head>` de las 3 páginas (al final) |
+| — | Estilos de 1, 3, 4 y 5 | `css/mejoras.css` | `<head>` de `index.html` y `recursos.html` |
 
-**Archivos modificados**
-- `index.html`: caja de resultado del test (escala, "En palabras simples", botón de Ferri) y enlaces a los scripts de Ferri en el `<head>`.
-- `js/test-sintomas.js`: comparte el resultado con Ferri (evento `test:resultado`) y permite que Ferri marque casillas (`window.TestSintomas.marcar`).
-- `recursos.html`, `confirmacion.html`: solo agregan las 5 líneas de Ferri en el `<head>`.
+**Cómo se comunican sin chocar:**
+- "Agregar al diario" (Menús) envía el evento `diario:agregar`, que escucha el Semáforo.
+- Los botones `data-ferri-pregunta` abren a Ferri con la pregunta ya hecha.
+- El test de síntomas avisa su resultado con `test:resultado`.
 
-**Cómo integrar sin romper el trabajo de los demás**
-1. Copiar los archivos nuevos.
-2. En cada HTML, pegar el bloque `<!-- S14 · Ferri … -->` antes de `</head>`.
-3. En `index.html`, reemplazar solo el `<div id="resultado-sintomas">…</div>`.
-4. Reemplazar `js/test-sintomas.js`. Conserva los mismos `id` y el comportamiento original.
-5. Ferri no usa nombres globales que choquen: todo está dentro de funciones. Solo expone `window.Ferri`, `window.FerriMotor`, `window.FerriConocimiento` y `window.FERRI_CONFIG`.
+Ningún archivo depende del orden de carga de otro, salvo `ferri-*.js` entre sí.
 
 ## Verificación
 ```bash
 node tests/probar-ferri.js
 ```
-Resultado: **Ferri: 66/66 casos correctos (100 %)**.
+```bash
+node tests/probar-voz-recordatorio.js
+```
+```bash
+node tests/probar-menus.js
+```
+```bash
+node tests/probar-plato.js
+```
+Resultados: **Ferri 74/74 · Dictado 13/13 · Menús 8/8 · Plato 9/9**.
 
-Lista de verificación manual (escritorio y celular):
-- [x] El test sigue funcionando igual (verde / amarillo / rojo y "Programar control").
-- [x] "¿Dudas con tu resultado? Pregúntale a Ferri" abre el chat y explica el resultado.
-- [x] "¿Por qué?", "no entiendo" y "cuéntame más" usan el contexto.
-- [x] "También tengo mareos" → pide confirmación → actualiza las casillas y el semáforo.
-- [x] Esc cierra el chat y el foco vuelve al botón.
-- [x] Micrófono: en Chrome o Edge dicta; si no hay permiso, lo explica.
-- [x] Sin errores en la consola.
+Probado en Chromium de escritorio (1280 px) y en un iPhone 13 emulado, en modo claro y oscuro, sin errores en la consola. Se comprobó:
+- doble toque y mantener en el video;
+- tecla M;
+- la foto de un plato de lentejas con espinaca;
+- el filtro vegetariano;
+- el dictado escrito;
+- la persistencia del tema y del tamaño de texto al recargar.
+
+**Para probar en un celular real (después de publicar):**
+- [ ] 🎤 Dictar recordatorio (pide permiso del micrófono; funciona en Chrome/Edge para Android y en Safari).
+- [ ] Doble toque y mantener presionado en el video.
+- [ ] Tomar una foto real de un plato.
+- [ ] Activar el modo oscuro del celular y ver que la web lo sigue.
 
 ## Despliegue en GitHub Pages
-1. Sube el repositorio a GitHub (rama `main`).
-2. En GitHub: **Settings → Pages → Build and deployment → Source: Deploy from a branch → Branch: `main` / `(root)` → Save**.
-3. Espera 1–2 minutos. La web queda en `https://<tu-usuario>.github.io/<nombre-del-repo>/`.
-4. Ábrela en el celular y repite la lista de verificación.
+1. Repositorio: `marcerdoboop/myfitnesspal-s14`, rama `main`.
+2. **Settings → Pages → Deploy from a branch → `main` / `(root)` → Save**.
+3. La web queda en `https://marcerdoboop.github.io/myfitnesspal-s14/`.
 
-> El micrófono necesita **HTTPS**. GitHub Pages ya lo usa; al abrir el archivo directamente con doble clic (`file://`) el dictado puede no funcionar.
+> El micrófono y la cámara necesitan **HTTPS**, que GitHub Pages ya tiene. Al abrir el archivo con doble clic pueden no funcionar.
