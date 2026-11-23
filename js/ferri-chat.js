@@ -79,7 +79,11 @@
       <div class="ferri-chips" role="group" aria-label="Sugerencias"></div>
       <form class="ferri-entrada" autocomplete="off">
         <label class="ferri-solo-lector" for="ferri-texto">Escribe tu pregunta</label>
-        <textarea id="ferri-texto" rows="1" maxlength="400" placeholder="Ej.: ¿qué significa mg?" enterkeyhint="send"></textarea>
+        <button class="ferri-icono ferri-adjuntar" type="button" aria-label="Adjuntar imagen" title="Adjuntar imagen: tu análisis de hemoglobina, una etiqueta, la caja de tu suplemento o tu plato">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 6.5 8.4 14.6a2 2 0 0 0 2.8 2.8l8.1-8.1a4 4 0 0 0-5.6-5.6L5.4 12a6 6 0 0 0 8.5 8.5l6.6-6.6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <input class="ferri-archivo" type="file" accept="image/*" hidden>
+        <textarea id="ferri-texto" rows="1" maxlength="400" placeholder="Escribe o adjunta una imagen 📎" enterkeyhint="send"></textarea>
         <button class="ferri-enviar" type="submit" aria-label="Enviar">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/></svg>
         </button>
@@ -181,7 +185,11 @@
     burbuja.className = 'ferri-burbuja';
 
     if (m.de === 'usuario') {
-      burbuja.textContent = m.texto;
+      if (m.imagen) {
+        const img = document.createElement('img'); img.className = 'ferri-adjunto'; img.src = m.imagen; img.alt = 'Imagen que enviaste';
+        burbuja.appendChild(img);
+      }
+      if (m.texto) burbuja.appendChild(document.createTextNode(m.texto));
     } else {
       const lectorAntes = document.createElement('span'); lectorAntes.className = 'ferri-solo-lector'; lectorAntes.textContent = 'Ferri dice: ';
       burbuja.appendChild(lectorAntes);
@@ -191,6 +199,7 @@
         m.lista.forEach(t => { const li = document.createElement('li'); conNegritas(li, t); ul.appendChild(li); });
         burbuja.appendChild(ul);
       }
+      (m.textoFinal || []).forEach(t => { const p = document.createElement('p'); conNegritas(p, t); burbuja.appendChild(p); });
       if (m.acciones && m.acciones.length) {
         const zona = document.createElement('div'); zona.className = 'ferri-acciones';
         m.acciones.forEach(a => {
@@ -288,6 +297,104 @@
   }
 
   form.addEventListener('submit', e => { e.preventDefault(); enviar(campo.value); });
+
+  // ---------- Imágenes: Ferri "ve" (colores) y "lee" (texto con OCR), todo en el dispositivo ----------
+  const archivo = $('.ferri-archivo');
+  $('.ferri-adjuntar').addEventListener('click', () => archivo.click());
+  archivo.addEventListener('change', () => { if (archivo.files[0]) recibirImagen(archivo.files[0]); archivo.value = ''; });
+  campo.addEventListener('paste', e => {
+    const item = Array.from(e.clipboardData && e.clipboardData.items || []).find(i => i.type.startsWith('image/'));
+    if (item) { e.preventDefault(); recibirImagen(item.getAsFile()); }
+  });
+  panel.addEventListener('dragover', e => { if (Array.from(e.dataTransfer.items || []).some(i => i.kind === 'file')) { e.preventDefault(); panel.classList.add('soltar-aqui'); } });
+  panel.addEventListener('dragleave', e => { if (!panel.contains(e.relatedTarget)) panel.classList.remove('soltar-aqui'); });
+  panel.addEventListener('drop', e => {
+    panel.classList.remove('soltar-aqui');
+    const f = Array.from(e.dataTransfer.files || []).find(x => x.type.startsWith('image/'));
+    if (f) { e.preventDefault(); recibirImagen(f); }
+  });
+
+  const abs = ruta => new URL(ruta, location.href).href;
+  function cargarImagen(file) {
+    return new Promise((ok, falla) => {
+      const url = URL.createObjectURL(file); const img = new Image();
+      img.onload = () => ok(img); img.onerror = () => falla(new Error('imagen')); img.src = url;
+    });
+  }
+  function lienzo(img, max) {
+    const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); return c;
+  }
+  function asegurarPlato() {
+    return window.PlatoFoto ? Promise.resolve() : cargarScript(abs('js/plato-foto.js'));
+  }
+  // OCR (Tesseract.js) se descarga solo la primera vez que alguien adjunta una imagen
+  let trabajadorOCR = null, alProgresar = null;
+  async function obtenerOCR() {
+    if (!window.Tesseract) await cargarScript(abs('vendor/tesseract/tesseract.min.js'));
+    if (!trabajadorOCR) {
+      trabajadorOCR = window.Tesseract.createWorker('spa', 1, {
+        workerPath: abs('vendor/tesseract/worker.min.js'), corePath: abs('vendor/tesseract/core'), langPath: abs('vendor/tesseract/lang'), gzip: true,
+        logger: m => alProgresar && alProgresar(m)
+      }).catch(err => { trabajadorOCR = null; throw err; });
+    }
+    return trabajadorOCR;
+  }
+  function conTiempo(promesa, ms) { return Promise.race([promesa, new Promise((_, f) => setTimeout(() => f(new Error('tiempo')), ms))]); }
+
+  function mostrarProcesando(texto) {
+    if (escribiendo) { escribiendo.remove(); escribiendo = null; }
+    const fila = document.createElement('div'); fila.className = 'ferri-msj ferri-msj-bot ferri-escribiendo ferri-procesando';
+    const b = document.createElement('div'); b.className = 'ferri-burbuja';
+    b.innerHTML = '<span></span><span></span><span></span>';
+    const t = document.createElement('em'); t.className = 'ferri-procesando-texto'; t.textContent = texto; b.appendChild(t);
+    fila.appendChild(b); mensajes.appendChild(fila); bajar(true); chips.textContent = '';
+    return { poner: x => { t.textContent = x; }, quitar: () => fila.remove() };
+  }
+
+  let ocupado = false;
+  async function recibirImagen(file) {
+    if (ocupado) { avisar('Espera, todavía estoy mirando la imagen anterior.'); return; }
+    if (!file || !/^image\//.test(file.type)) { avisar('Ese archivo no es una imagen. Prueba con una foto (JPG o PNG).'); return; }
+    if (file.size > 15 * 1024 * 1024) { avisar('La imagen pesa más de 15 MB. Prueba con una foto más liviana.'); return; }
+    ocupado = true;
+    let img;
+    try { img = await cargarImagen(file); } catch (e) { avisar('No pude abrir esa imagen.'); ocupado = false; return; }
+    const miniatura = lienzo(img, 360).toDataURL('image/jpeg', 0.8);
+    const texto = campo.value.trim();
+    const m = { de: 'usuario', texto, imagen: miniatura };
+    historial.push(m); guardar(); pintarMensaje(m);
+    campo.value = ''; ajustarAltura();
+    const estado = mostrarProcesando('Mirando tu imagen…');
+    // 1) Ver: colores de la foto (recorte central) + nombre del archivo
+    let colores = [];
+    try {
+      await asegurarPlato();
+      const P = window.PlatoFoto, L = 96, c = document.createElement('canvas'); c.width = c.height = L;
+      const lado = Math.min(img.naturalWidth, img.naturalHeight) * 0.8;
+      c.getContext('2d').drawImage(img, (img.naturalWidth - lado) / 2, (img.naturalHeight - lado) / 2, lado, lado, 0, 0, L, L);
+      const porNombre = P.analizarNombre(file.name || '');
+      colores = P.combinar(porNombre, P.analizarPixeles(c.getContext('2d').getImageData(0, 0, L, L).data))
+        .map(d => { const a = P.ALIMENTOS.find(x => x.id === d.alimento); return { nombre: a.nombre, mg: a.mg, confianza: d.confianza, como: d.como }; })
+        .filter(d => d.nombre !== 'Arroz' || d.confianza > 0.4);
+    } catch (e) { colores = []; }
+    // 2) Leer: texto con OCR
+    let leido = '', ocrFallo = false;
+    try {
+      estado.poner('Preparando la lectura de texto (solo la primera vez tarda un poco)…');
+      alProgresar = p => { if (p.status === 'recognizing text') estado.poner('Leyendo el texto… ' + Math.round(p.progress * 100) + ' %'); };
+      const w = await conTiempo(obtenerOCR(), 60000);
+      const resultado = await conTiempo(w.recognize(lienzo(img, 1800)), 60000);
+      leido = (resultado.data && resultado.data.confidence > 35) ? resultado.data.text : '';
+    } catch (e) { ocrFallo = true; console.info('[Ferri] No se pudo leer texto:', e && e.message); }
+    alProgresar = null;
+    estado.quitar();
+    const resp = motor.responderImagen({ texto: leido, colores, ocrFallo });
+    if (ocrFallo && !colores.length) resp.texto.push('(La lectura de texto necesita la versión publicada de la web; abriendo el archivo directo en el navegador no funciona.)');
+    decirBot(resp);
+    ocupado = false;
+  }
   campo.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); enviar(campo.value); } });
   function ajustarAltura() { campo.style.height = 'auto'; campo.style.height = Math.min(campo.scrollHeight, 120) + 'px'; }
   campo.addEventListener('input', ajustarAltura);

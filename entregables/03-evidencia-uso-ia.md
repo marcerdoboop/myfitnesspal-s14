@@ -48,6 +48,7 @@ mayores. Propón 2 o 3 alternativas, recomienda una viable para hoy y explica c�
 | LLM en la nube (Botpress) | 🔁 Modificada: queda como modo opcional |
 | Voz en el chat | ❌ Descartada: la voz es exclusiva de Recordatorios |
 | Botones "¿Qué significa mg?" junto a los términos | ✅ Aceptada |
+| Adjuntar imágenes y leerlas (OCR) en el dispositivo | ✅ Aceptada luego: lee resultados de hemoglobina, etiquetas y cajas de suplemento, sin subir la imagen |
 
 ### 3 · Recomendaciones personalizadas en Menús
 ```text

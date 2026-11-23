@@ -94,6 +94,21 @@ const casos = [
   { test: null, dice: ['quiero un nuevo test'], espera: /Te llevo al test/ },
 ];
 
+// --- Imágenes: Ferri "lee" (OCR) y "ve" (colores) ---
+const casosImagen = [
+  [{ texto: 'LABORATORIO Sexo: F HEMOGLOBINA 11.2 g/dL' }, /hemoglobina: 11.2 g\/dL.*por debajo/s],
+  [{ texto: 'Hemoglobina ..... 128 g/L' }, /12.8 g\/dL.*necesito saber/s],
+  [{ texto: 'SULFATO FERROSO tabletas' }, /suplemento de hierro.*dosis/s],
+  [{ texto: 'Informacion nutricional Hierro 4.5 mg' }, /4.5 mg de hierro.*25 %/s],
+  [{ texto: 'Menu: lentejas con arroz' }, /Lentejas/],
+  [{ texto: '', colores: [{ nombre: 'Lentejas', mg: 5, confianza: 0.79, como: 'color marrón' }] }, /Lentejas.*79 %.*28 %/s],
+  [{ texto: 'feliz cumpleaños' }, /no encontré nada sobre hierro/],
+  [{ texto: '', ocrFallo: true }, /No pude leer texto/],
+];
+for (const [entrada, espera] of casosImagen) {
+  casos.push({ imagen: entrada, dice: [], espera });
+}
+
 let ok = 0;
 const fallas = [];
 for (const c of casos) {
@@ -101,10 +116,11 @@ for (const c of casos) {
   const conv = F.crearConversacion({ alActualizarTest: ids => { marcados = ids; } });
   if (c.test) conv.fijarResultado(c.test);
   let r;
+  if (c.imagen) r = conv.responderImagen(c.imagen);
   for (const m of c.dice) r = conv.responder(m);
-  const texto = [].concat(r.texto, r.lista || []).join(' ');
+  const texto = [].concat(r.texto, r.lista || [], r.textoFinal || []).join(' ');
   if (c.espera.test(texto)) ok++;
-  else fallas.push({ dice: c.dice.join(' → '), espera: String(c.espera), obtuvo: texto.slice(0, 160) });
+  else fallas.push({ dice: c.imagen ? 'imagen: ' + JSON.stringify(c.imagen).slice(0, 60) : c.dice.join(' → '), espera: String(c.espera), obtuvo: texto.slice(0, 160) });
 }
 console.log(`Ferri: ${ok}/${casos.length} casos correctos (${Math.round(ok / casos.length * 100)} %)`);
 fallas.forEach(f => console.log('\n✗', f.dice, '\n  esperaba', f.espera, '\n  obtuvo  ', f.obtuvo));

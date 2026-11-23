@@ -11,3 +11,6 @@ Video de referencia: UNESCO en español. Los Objetivos de Desarrollo Sostenible 
 https://www.youtube.com/watch?v=MCKH5xk8X-g
 El video se inserta desde YouTube; no se descarga ni se redistribuye.
 Los enlaces de redes sociales llevan a páginas generales; reemplazar por las del proyecto.
+
+Lectura de texto en imágenes (OCR) de Ferri: Tesseract.js 5.1.1, tesseract.js-core 5.1.1 y modelo de español (Apache-2.0).
+https://github.com/naptha/tesseract.js — copia local en vendor/tesseract/

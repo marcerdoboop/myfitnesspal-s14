@@ -5,7 +5,7 @@ Web educativa para prevenir la anemia ferropénica (ODS 3), mejorada con **6 mej
 | # | Mejora | Dónde | Tecnología |
 |---|---|---|---|
 | 1 | Dictar el recordatorio y rellenar el formulario | Recordatorios | 🎤 Voz (única mejora con voz) |
-| 2 | **Ferri**, asistente que explica "mg", "meta de 18 mg", "absorción"… | Botón flotante | 💬 Conversacional por texto |
+| 2 | **Ferri**, asistente que explica "mg", "meta de 18 mg", "absorción"… y **lee imágenes** (análisis, etiquetas, suplementos, platos) | Botón flotante | 💬📎 Conversacional multimodal |
 | 3 | Menús según tus gustos, con "¿Por qué te lo recomendamos?" | Menús | ⭐ Recomendaciones personalizadas |
 | 4 | Doble toque ±10 s, mantener = 2×, atajos de teclado | Video y guía | 👆 Gestos y teclado |
 | 5 | Foto del plato → hierro estimado → semáforo del día | Semáforo de hierro | 📷 Reconocimiento de imágenes |
@@ -47,6 +47,7 @@ css/ferri.css                 mejora 2 (Ferri)
 css/adaptativo.css            mejora 6 (modo oscuro, tamaño de texto)
 js/voz-recordatorio.js        mejora 1
 js/ferri-*.js                 mejora 2
+vendor/tesseract/             OCR para que Ferri lea imágenes (Apache-2.0)
 js/menus-personalizados.js    mejora 3
 js/video-gestos.js            mejora 4
 js/plato-foto.js              mejora 5
@@ -61,5 +62,6 @@ La versión anterior a la Semana 14 es el commit `eda3708`.
 
 ## Créditos
 - Contenido de salud: información general del MINSA y la OMS, con fines educativos. **No reemplaza a un profesional de salud.** Los valores de hierro y costos son aproximados.
+- Lectura de texto en imágenes: [Tesseract.js](https://github.com/naptha/tesseract.js) 5.1.1 (Apache-2.0).
 - Principios de animación e interfaz: [emilkowalski/skills](https://github.com/emilkowalski/skills) (MIT).
 - Recursos originales del sitio: ver `FUENTES.txt`.

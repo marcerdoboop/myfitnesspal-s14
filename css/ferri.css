@@ -288,3 +288,12 @@
 .ayuda-ferri::before { content: "Fe"; display: inline-grid; place-items: center; width: 1.4em; height: 1.4em; border-radius: 50%; background: #1e7a3a; color: #fff; font-family: Georgia, serif; font-size: .75em; }
 .ayuda-ferri:active { transform: scale(.97); }
 @media (hover: hover) and (pointer: fine) { .ayuda-ferri:hover { background: #e4ebe6; } }
+
+/* Imágenes en el chat */
+.ferri-adjunto { display: block; max-width: 220px; max-height: 220px; width: auto; height: auto; border-radius: 10px; margin-bottom: .35rem; background: rgb(255 255 255 / .2); }
+.ferri-msj-usuario .ferri-burbuja:has(.ferri-adjunto) { padding: .4rem; }
+.ferri-msj-usuario .ferri-burbuja:has(.ferri-adjunto) > :not(img) { padding: 0 .4rem .2rem; }
+.ferri-procesando .ferri-burbuja { align-items: center; flex-wrap: wrap; gap: 4px 6px; }
+.ferri-procesando-texto { font-style: normal; font-size: .85rem; color: var(--f-suave); margin-left: .3rem; }
+.ferri-panel.soltar-aqui { box-shadow: 0 0 0 3px var(--f-verde), 0 12px 32px rgb(20 48 31 / .18); }
+.ferri-panel.soltar-aqui .ferri-mensajes::after { content: "Suelta la imagen aquí"; position: sticky; bottom: 0; align-self: center; padding: .4rem .8rem; border-radius: 999px; background: var(--f-verde); color: #fff; font-size: .85rem; }

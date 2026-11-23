@@ -21,11 +21,19 @@ Cada mejora está en su propio archivo. Todas funcionan en GitHub Pages, sin ser
 
 ---
 
-## 2 · Asistente conversacional por texto: Ferri
+## 2 · Asistente conversacional: Ferri (texto + imágenes)
 **Problema:** "mg", "meta de 18 mg" o "absorción" no se explican y no hay a quién preguntar.
 **Solución:** **Ferri** (por *Fe*, el símbolo del hierro), un chat flotante **solo de texto** que responde **solo dudas sobre anemia y hierro**: qué es mg, la meta de 18 mg, la absorción, el hierro hemínico, la hemoglobina y el resultado del test de síntomas. Junto a esos términos aparecen botones **"¿Qué significa mg?"** que abren a Ferri con la pregunta ya hecha.
+**Imágenes 📎 (multimodal):** se puede adjuntar, pegar o arrastrar una imagen y Ferri la **lee** y la **ve**:
+- **resultado de laboratorio** → lee "Hemoglobina 11.2 g/dL" (también en g/L) y lo interpreta según el grupo (pregunta si es mujer, varón, gestante o niño);
+- **etiqueta nutricional** → lee "Hierro 4.5 mg" y calcula el % de la meta de 18 mg;
+- **caja de suplemento** → reconoce "sulfato ferroso" y explica el uso sin dar dosis;
+- **foto del plato** → estima los alimentos por colores, con su confianza.
+
+Muestra "Texto que leí" en "¿En qué me baso?". **La imagen no sale del dispositivo.**
+
 **Para no invadir a los demás:** si le piden un menú o un recordatorio, responde que eso está en su sección (no lo hace él).
-**Tecnología:** motor conversacional propio en el navegador (entiende la intención, tolera errores de tipeo, recuerda el contexto para "¿por qué?", "no entiendo" o "más"). Archivos: `js/ferri-*.js`, `css/ferri.css`. Botpress (LLM) queda como modo opcional (`docs/BOTPRESS.md`).
+**Tecnología:** motor conversacional propio en el navegador (entiende la intención, tolera errores de tipeo, recuerda el contexto para "¿por qué?", "no entiendo" o "más"). Para las imágenes usa **Tesseract.js** (lectura de texto, OCR, en español), incluido en `vendor/tesseract/` y cargado solo cuando se adjunta una imagen, más el análisis de colores de la mejora 5. Archivos: `js/ferri-*.js`, `css/ferri.css`. Botpress (LLM) queda como modo opcional (`docs/BOTPRESS.md`).
 
 | Principio | Cómo se ve |
 |---|---|

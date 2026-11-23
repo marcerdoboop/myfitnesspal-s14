@@ -555,8 +555,97 @@
 
     function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
+    // ----- Imágenes (S14): Ferri "ve" (colores de la foto) y "lee" (texto por OCR) -----
+    // entrada: { texto: 'lo que leyó el OCR', colores: [{ nombre, mg, confianza, como }], ocrFallo: bool, pregunta: 'texto del usuario' }
+    function interpretarImagen(entrada) {
+      const leido = String(entrada.texto || '').replace(/\s+/g, ' ').trim();
+      const n = normalizar(leido);
+      const colores = entrada.colores || [];
+      const pie = 'Analicé la imagen en tu dispositivo: no se envía a ningún servidor.';
+      const conLeido = (base) => leido ? base + ' · Texto que leí: “' + leido.slice(0, 160) + (leido.length > 160 ? '…' : '') + '”' : base;
+
+      // 1) Resultado de laboratorio con hemoglobina
+      const hb = n.match(/(hemoglobina|hemoglobin|\bhb\b|\bhgb\b)[^0-9]{0,30}(\d{1,3}(?:[.,]\d{1,2})?)\s*(g ?\/ ?dl|g ?dl|g ?\/ ?l|g ?l)?/);
+      if (hb) {
+        let v = parseFloat(hb[2].replace(',', '.'));
+        if (v > 30 && v < 220) v = Math.round(v) / 10; // 112 g/L → 11.2 g/dL
+        if (v >= 3 && v <= 22) {
+          const grupo = extraerGrupo(n) || (/(sexo|genero)\W{0,3}f\b|femenino/.test(n) ? 'mujer' : /(sexo|genero)\W{0,3}m\b|masculino/.test(n) ? 'varon' : null);
+          const res = grupo ? interpretarHb(v, grupo) : (function () {
+            ctx.pendiente = { tipo: 'grupo', valor: v };
+            return r({ texto: ['Para interpretarlo necesito saber algo más (el límite cambia según la persona): ¿el resultado es de…?'], chips: ['Mujer', 'Varón', 'Gestante', 'Niño o niña'] });
+          })();
+          res.texto.unshift('📄 Leí en tu imagen un resultado de **hemoglobina: ' + v + ' g/dL**. Si leí mal el número, escríbemelo y lo corrijo.');
+          res.base = conLeido('Leí el texto de la imagen con reconocimiento óptico de caracteres (OCR). ' + pie);
+          return res;
+        }
+      }
+
+      // 2) Caja de suplemento de hierro
+      const sup = n.match(/(sulfato ferroso|fumarato ferroso|gluconato ferroso|hierro polimaltosado|polimaltosato|hierro aminoquelado|suplemento de hierro|multimicronutrientes|chispitas)/);
+      if (sup) {
+        const res = responderTema('suplemento');
+        res.texto.unshift('💊 Parece la caja o etiqueta de un **suplemento de hierro** (leí “' + sup[1] + '”).');
+        res.texto.push('No puedo decirte la dosis: eso lo indica tu médico según tu hemoglobina.');
+        res.base = conLeido('OCR en tu dispositivo · Información general del MINSA. ' + pie);
+        return res;
+      }
+
+      // 3) Etiqueta nutricional con hierro
+      const etiqueta = n.match(/hierro[^0-9]{0,25}(\d{1,3}(?:[.,]\d{1,2})?)\s*mg/);
+      if (etiqueta) {
+        const mg = parseFloat(etiqueta[1].replace(',', '.'));
+        const porc = Math.round(mg / 18 * 100);
+        ctx.ultimoTema = 'meta';
+        return r({
+          texto: ['🏷️ Leí una **etiqueta nutricional**: dice **' + mg + ' mg de hierro** por porción.', 'Eso es el **' + porc + ' %** de la meta diaria de 18 mg de una mujer adulta. ' + (porc >= 20 ? 'Es un buen aporte.' : porc >= 10 ? 'Aporta algo, pero no es de los más altos.' : 'Aporta poco hierro.'), 'Si es un alimento de origen vegetal, acompáñalo con limón o naranja para absorberlo mejor.'],
+          chips: ['¿Qué es la meta de 18 mg?', '¿Qué es la absorción?', '¿Qué alimento tiene más hierro?'],
+          base: conLeido('OCR en tu dispositivo · % calculado sobre 18 mg/día. ' + pie)
+        });
+      }
+
+      // 4) Alimentos escritos en la imagen (una carta, una receta, una lista de compras)
+      const escritos = leido ? extraerAlimentos(n) : [];
+      if (escritos.length) {
+        const res = infoAlimento(escritos);
+        res.texto.unshift('📝 Leí en tu imagen: ' + escritos.slice(0, 3).map(a => '**' + a.nombre + '**').join(', ') + '.');
+        res.base = conLeido('OCR en tu dispositivo · Valores aproximados por porción. ' + pie);
+        return res;
+      }
+
+      // 5) Foto de comida: estimación por colores
+      const comida = colores.filter(c => c.confianza >= 0.45);
+      if (comida.length) {
+        const total = Math.round(comida.reduce((s, c) => s + c.mg, 0) * 10) / 10;
+        ctx.ultimoTema = 'alimentos';
+        return r({
+          texto: ['🍽️ Parece un plato de comida. Lo que creo ver:'],
+          lista: comida.map(c => '**' + c.nombre + '** (~' + c.mg + ' mg de hierro) · confianza ' + Math.round(c.confianza * 100) + ' %'),
+          texto2: null,
+          chips: ['¿Cómo absorbo mejor el hierro?', '¿Qué alimento tiene más hierro?', '¿Qué es la meta de 18 mg?'],
+          base: 'Estimación por los colores de la foto (' + comida.map(c => c.como).join('; ') + '). Puede equivocarse: si no es eso, dime qué alimento es (por ejemplo “es sangrecita”). ' + pie,
+          extra: 'En total serían unos **' + total + ' mg**, el ' + Math.round(total / 18 * 100) + ' % de tu meta diaria de 18 mg. Si quieres sumarlo a tu día, usa “Subir foto del plato” en el Semáforo de hierro.'
+        });
+      }
+
+      // 6) No reconoció nada útil
+      const textos = [];
+      if (leido) textos.push('Leí este texto en tu imagen: “' + leido.slice(0, 120) + (leido.length > 120 ? '…' : '') + '”, pero no encontré nada sobre hierro o anemia.');
+      else if (entrada.ocrFallo) textos.push('No pude leer texto en la imagen y tampoco reconocí comida.');
+      else textos.push('No reconocí comida ni texto sobre hierro en tu imagen.');
+      textos.push('Puedo ayudarte con fotos de: **un resultado de hemoglobina**, **una etiqueta nutricional**, **la caja de un suplemento de hierro** o **tu plato de comida**. Una foto nítida y de frente funciona mejor.');
+      return r({ texto: textos, chips: ['¿Qué significa mg?', '¿Qué es la hemoglobina?'], base: 'Solo respondo dudas sobre anemia y hierro. ' + pie });
+    }
+
     return {
       responder,
+      responderImagen(entrada) {
+        const o = interpretarImagen(entrada);
+        if (o.extra) { o.textoFinal = [o.extra]; delete o.extra; }
+        delete o.texto2;
+        ctx.ultimaRespuesta = o;
+        return o;
+      },
       // El test de la página avisa a Ferri cuando hay un resultado nuevo
       fijarResultado(sintomasIds) {
         ctx.resultado = { sintomas: sintomasIds.slice(), estado: estadoDe(sintomasIds.length), explicito: true };
@@ -566,7 +655,7 @@
       explicarResultado: () => { const o = explicarResultado(); ctx.ultimaRespuesta = o; return o; },
       bienvenida() {
         if (ctx.resultado) return r({ texto: ['¡Hola! Soy **Ferri** 👋. Vi tu resultado del test. ¿Quieres que te lo explique con palabras simples?'], chips: ['Sí, explícame mi resultado', '¿Qué hago ahora?', '¿Qué puedes hacer?'] });
-        return r({ texto: ['¡Hola! Soy **Ferri** 👋, el asistente de MyFitnessPal. Resuelvo **dudas sobre anemia y hierro**: qué significa “mg”, la meta de 18 mg, la absorción, tu resultado del test…', 'Escríbeme tu pregunta. Recuerda que **no reemplazo a un médico**.'], chips: ['¿Qué significa mg?', '¿Qué es la meta de 18 mg?', '¿Qué es la absorción?'] });
+        return r({ texto: ['¡Hola! Soy **Ferri** 👋, el asistente de MyFitnessPal. Resuelvo **dudas sobre anemia y hierro**: qué significa “mg”, la meta de 18 mg, la absorción, tu resultado del test…', 'Escríbeme tu pregunta o **adjunta una imagen 📎**: tu análisis de hemoglobina, una etiqueta nutricional, la caja de tu suplemento o tu plato. Recuerda que **no reemplazo a un médico**.'], chips: ['¿Qué significa mg?', '¿Qué es la meta de 18 mg?', '¿Qué es la absorción?'] });
       },
       reiniciar() { ctx.ultimoTema = null; ctx.pendiente = null; ctx.nivel = 'normal'; ctx.fallos = 0; ctx.ultimaRespuesta = null; },
       volverNivelNormal() { ctx.nivel = 'normal'; },
