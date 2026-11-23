@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- PASO 1: permite que el navegador use el ancho real del celular. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recordatorio programado | MyFitnessPal</title>
+  <!-- PASO 2: conectar este HTML con el archivo CSS compartido. -->
+  <link rel="stylesheet" href="css/estilos.css">
+  <!-- Este icono aparece en la pestaña del navegador. -->
+  <link rel="icon" type="image/svg+xml" href="iconos/favicon.svg">
+ 
+</head>
+
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <!-- PASO 3: este header permanece visible con position: sticky en CSS. -->
+  <header class="cabecera">
+    <div class="contenedor barra">
+      <a class="marca" href="index.html"><img src="iconos/favicon.svg" alt="" width="42" height="42">MyFitnessPal</a>
+  
+      <button id="boton-menu" class="boton-menu" type="button" aria-expanded="false" aria-controls="navegacion"
+        aria-label="Abrir menú">
+        <span class="icono-menu" aria-hidden="true"></span><span id="texto-menu">Menú</span>
+      </button>
+          <!-- PASO 4: la lista principal se ordena horizontalmente con Flexbox. -->
+           
+      <nav id="navegacion" aria-label="Navegación principal">
+          <ul class="menu">
+            <li><a href="index.html#inicio">Inicio</a></li>
+            <li><a href="index.html#nosotros">Nosotros</a></li>
+            <li>
+              <!-- details abre el submenú con clic, Enter o toque; no necesita JS. -->
+              <details class="desplegable" id="resolver">
+                <summary>Resolver</summary>
+                <!-- Esta lista es el menú vertical desplegable: una opción por HU. -->
+                <ul class="submenu">
+                  <li><a href="index.html#orientador">Semáforo de hierro</a></li>
+                  <li><a href="index.html#menus">Menús por presupuesto</a></li>
+                  <li><a href="index.html#test-sintomas">Test de síntomas</a></li>
+                  <li><a href="index.html#contacto">Recordatorios</a></li>
+                </ul>
+              </details>
+            </li>
+            <li><a href="recursos.html">Video y guía</a></li>
+          </ul>
+        </nav>
+    </div>
+  </header>
+  <main id="contenido" class="contenedor seccion">
+    <section class="confirmacion" aria-labelledby="confirmado">
+      <p class="etiqueta">Final de la demostración</p>
+      <h1 id="confirmado">Recordatorio programado (simulación).</h1>
+      <p>Así se vería el cierre de la HU02. A la hora elegida, la app mostraría un aviso con los botones “Ya lo tomé” y
+        “Recordar en 30 minutos”, y el calendario marcaría el día con un check verde.</p>
+      <p>Este es un mensaje fijo de prueba. No se ha guardado tu información ni se ha programado una notificación real.
+      </p>
+      <h2>¿Quieres repetir el recorrido?</h2>
+      <p>Vuelve al formulario para programar otro recordatorio o revisa los menús.</p><a class="boton"
+        href="index.html#contacto">Programar otro recordatorio</a><a class="enlace" href="index.html#menus">Ver
+        menús</a>
+    </section>
+  </main>
+  <!-- PASO FINAL: pie compartido por las páginas del sitio. -->
+  <footer class="pie">
+    <div class="contenedor">
+      <img class="ods" src="imagenes/S_SDG-goals_icons-individual-rgb-03.png"
+        alt="Objetivo de Desarrollo Sostenible 3: Salud y bienestar" width="90" height="90">
+      <p><strong>MyFitnessPal</strong> · Prevención y control de la anemia ferropénica</p>
+      <p>Contacto de ejemplo: hola@ejemplo.org</p>
+      <nav class="redes" aria-label="Redes sociales de referencia">
+        <!-- Son páginas generales de las redes; reemplazar por cuentas del proyecto. -->
+        <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"><img src="iconos/facebook.svg"
+            alt="" width="24" height="24">Facebook</a>
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"><img src="iconos/instagram.svg"
+            alt="" width="24" height="24">Instagram</a>
+        <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer"><img src="iconos/youtube.svg"
+            alt="" width="24" height="24">YouTube</a>
+      </nav>
+      <p>© 2026 MyFitnessPal · Ejemplo educativo ficticio · <a href="FUENTES.txt">Créditos de recursos</a></p>
+    </div>
+  </footer>
+   <script src="js/menu.js"></script>
+</body>
+
+</html>

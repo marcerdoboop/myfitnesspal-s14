@@ -1,0 +1,163 @@
+/* PASO 1. El ancho incluye padding y borde: facilita calcular tamaños. */
+* { box-sizing: border-box; }
+/* PASO 2. Estilos generales que heredan los textos. */
+body { margin: 0; font-family: Arial, sans-serif; color: #1f2933; background: #fafafa; line-height: 1.65; }
+h1, h2, h3 { line-height: 1.2; }
+h1 { font-size: 2.7rem; margin: 0 0 1rem; }
+h2 { font-size: 2rem; margin-top: 0; }
+h3 { font-size: 1.2rem; }
+a { color: #17692f; text-underline-offset: 4px; }
+/* El foco visible permite recorrer la web con el teclado. */
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #263238; outline-offset: 4px; }
+/* PASO 3. Nunca estirar una imagen más allá de su contenedor. */
+img { max-width: 100%; height: auto; display: block; }
+.contenedor { width: 92%; max-width: 1120px; margin: 0 auto; }
+.seccion { padding: 3.5rem 0; }
+.fondo { background: #e4ebe6; }
+.etiqueta { font-weight: bold; color: #1e7a3a; font-size: .9rem; text-transform: uppercase; letter-spacing: .08em; }
+.nota { font-size: .9rem; }
+/* PASO 4. Flexbox alinea logo y navegación. wrap evita desbordamientos. */
+.cabecera { background: white; border-bottom: 1px solid #c5d3c9; }
+.barra { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1rem 0; }
+.marca { display: flex; align-items: center; gap: .6rem; text-decoration: none; font-size: 1.4rem; font-weight: bold; }
+.menu { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem; list-style: none; margin: 0; padding: 0; }
+.menu a, summary { display: block; padding: .65rem .8rem; color: #1f2933; cursor: pointer; }
+.menu a { text-decoration: none; }
+.menu a:hover, summary:hover { background: #d9e4dc; border-radius: .4rem; }
+/* El menú acompaña al usuario al bajar por la página.
+   sticky conserva su espacio: no hace falta compensar con padding en body.
+   top: 0 lo mantiene pegado arriba; z-index evita que las fotos lo tapen. */
+.cabecera { position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 18px #14301f10; }
+/* Dejar espacio al navegar con #id para que el header no tape el título. */
+section[id], main[id] { scroll-margin-top: 130px; }
+/* PASO 5. La lista interior es vertical. Solo details controla su apertura. */
+.desplegable { position: relative; }
+summary { list-style: revert; }
+.submenu { position: absolute; top: 100%; left: 0; width: 230px; padding: .5rem; margin: .3rem 0 0; list-style: none; background: white; border: 1px solid #a9bdaf; border-radius: .5rem; box-shadow: 0 8px 20px #14301f20; z-index: 10; }
+/* PASO 6. Dos columnas iguales: imagen y texto. minmax evita desborde. */
+.dos-columnas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem; align-items: center; }
+.dos-columnas > * { min-width: 0; }
+.hero { padding-top: 4rem; padding-bottom: 4rem; }
+.foto { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 2rem .8rem 2.5rem 1rem; }
+/* PASO 7. Enlaces y botones con apariencia consistente. */
+.boton { display: inline-block; padding: .8rem 1.1rem; background: #1e7a3a; color: white; border: 0; border-radius: .45rem; font: inherit; font-weight: bold; text-decoration: none; cursor: pointer; }
+.boton:hover { background: #145a2a; }
+.enlace { display: inline-block; margin: .8rem; }
+/* PASO 8. Tres tarjetas en escritorio. */
+.tarjetas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.tarjeta { padding: 1.5rem; border: 1px solid #c5d3c9; border-radius: .7rem; background: white; }
+.numero { color: #1e7a3a; font-weight: bold; }
+.galeria { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+figure { margin: 0; }
+.galeria img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: .6rem; }
+figcaption { padding-top: .5rem; }
+blockquote { margin-left: 0; font-size: 1.35rem; }
+/* PASO 9. El orientador responde a los radios sin JavaScript. */
+.orientador { border: 1px solid #8aa593; border-radius: .6rem; padding: 1.5rem; min-width: 0; }
+legend { font-weight: bold; padding: 0 .5rem; }
+.orientador > label { display: inline-block; margin: .4rem 1rem .4rem 0; padding: .4rem; cursor: pointer; }
+.orientador > input:checked + label { background: #1e7a3a; color: white; border-radius: .3rem; }
+.resultados { background: white; padding: 1.5rem; border-radius: .5rem; margin-top: 1rem; }
+/* Primero ocultamos todos los paneles. */
+.respuesta { display: none; }
+/* ~ busca un hermano posterior. :checked identifica la opción marcada. */
+#rojo:checked ~ .resultados .rojo,
+#amarillo:checked ~ .resultados .amarillo,
+#verde:checked ~ .resultados .verde,
+#p10:checked ~ .resultados .p10,
+#p15:checked ~ .resultados .p15,
+#p20:checked ~ .resultados .p20 { display: block; }
+/* PASO 10. Cada campo ocupa una fila del formulario. */
+.formulario { display: grid; gap: .6rem; background: white; border: 1px solid #c5d3c9; padding: 1.5rem; border-radius: .7rem; }
+.formulario > label { font-weight: bold; }
+input[type="text"], input[type="email"], select, textarea { width: 100%; min-width: 0; font: inherit; padding: .7rem; border: 1px solid #5f7a68; border-radius: .3rem; background: white; color: #1f2933; }
+input[type="radio"], input[type="checkbox"] { accent-color: #1e7a3a; }
+/* PASO 11. La proporción del video se conserva a cualquier ancho. */
+.video { width: 100%; aspect-ratio: 16 / 9; border: 0; display: block; }
+.confirmacion { max-width: 760px; margin: 0 auto; }
+.pie { background: #14301f; color: white; padding: 2rem 0; }
+.pie a { color: white; }
+.redes { display: flex; flex-wrap: wrap; gap: 1.2rem; }
+.redes a { display: inline-flex; align-items: center; gap: .5rem; }
+.redes img { filter: invert(1); }
+.saltar { position: absolute; left: -9999px; }
+.saltar:focus { left: 1rem; top: 1rem; padding: 1rem; background: white; z-index: 20; }
+/* PASO 12. TABLET: estas reglas se aplican a 900 px o menos. */
+@media (max-width: 900px) {
+  .barra { gap: .4rem; }
+  .tarjetas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  h1 { font-size: 2.2rem; }
+}
+/* PASO 13. CELULAR: cambiamos columnas por una sola columna. */
+@media (max-width: 600px) {
+  h1 { font-size: 1.9rem; }
+  h2 { font-size: 1.6rem; }
+  .dos-columnas, .tarjetas, .galeria { grid-template-columns: 1fr; }
+  .dos-columnas { gap: 1.5rem; }
+  .hero, .seccion { padding-top: 2.2rem; padding-bottom: 2.2rem; }
+  .barra nav { width: 100%; }
+  .menu { flex-direction: row; flex-wrap: wrap; gap: 0; }
+  .menu a, summary { padding: .45rem .55rem; font-size: .95rem; }
+  /* Conserva el desplegable vertical bajo Resolver y dentro de la pantalla. */
+  .submenu { left: auto; right: 0; width: 205px; max-width: 85vw; max-height: 55vh; overflow-y: auto; }
+  section[id], main[id] { scroll-margin-top: 190px; }
+  .enlace { margin-left: 0; }
+  .formulario, .orientador, .resultados { padding: 1rem; }
+}
+
+/* Paleta ODS 3 (salud): verde de acento, grises neutros y verde oscuro. */
+.postal { background: #fff; padding: .8rem; border: 1px solid #c5d3c9;
+  border-radius: 2rem 1rem 2.8rem 1rem; box-shadow: 8px 10px 0 #a9bdaf; }
+.postal figcaption { padding: .6rem .5rem .2rem; font-family: Georgia, serif; font-style: italic; }
+.hero h1 { font-family: Georgia, serif; font-weight: normal; font-size: clamp(2.2rem, 4.6vw, 3.8rem); letter-spacing: -.035em; }
+h2 { font-family: Georgia, serif; font-weight: normal; }
+.tarjeta:nth-child(2) { background: #eef3ef; border-radius: 1.5rem .6rem 1.5rem .6rem; }
+blockquote { font-family: Georgia, serif; font-style: italic; max-width: 780px; }
+textarea { resize: vertical; }
+@media (max-width: 600px) {
+  .barra { padding: .6rem 0; }
+  .marca { font-size: 1.2rem; }
+  .marca img { width: 30px; }
+}
+
+/* Logo del ODS 3 en el pie de página. */
+.ods { width: 90px; height: 90px; border-radius: .4rem; margin-bottom: 1rem; }
+/* ===== MENÚ RESPONSIVE (botón hamburguesa) ===== */
+/* En escritorio el botón no se ve. */
+.boton-menu { display: none; align-items: center; gap: .5rem; padding: .5rem .8rem; font: inherit; font-weight: bold; color: #1f2933; background: #e4ebe6; border: 1px solid #8aa593; border-radius: .4rem; cursor: pointer; }
+.icono-menu, .icono-menu::before, .icono-menu::after { display: block; width: 20px; height: 2px; background: #1f2933; }
+.icono-menu { position: relative; }
+.icono-menu::before, .icono-menu::after { content: ""; position: absolute; left: 0; }
+.icono-menu::before { top: -6px; }
+.icono-menu::after { top: 6px; }
+.boton-menu[aria-expanded="true"] .icono-menu { background: transparent; }
+.boton-menu[aria-expanded="true"] .icono-menu::before { top: 0; transform: rotate(45deg); }
+.boton-menu[aria-expanded="true"] .icono-menu::after { top: 0; transform: rotate(-45deg); }
+
+@media (max-width: 600px) {
+  .boton-menu { display: inline-flex; }
+  .barra nav { width: 100%; }
+  .barra nav[hidden] { display: none; }
+  /* Menú vertical: un enlace por fila. */
+  .menu { flex-direction: column; align-items: stretch; gap: 0; border-top: 1px solid #c5d3c9; }
+  .menu a, summary { padding: .8rem .6rem; font-size: 1rem; }
+  /* El submenú Resolver se abre hacia abajo, dentro del menú. */
+  .submenu { position: static; width: auto; max-width: none; max-height: none; margin: 0 0 .5rem .8rem; box-shadow: none; }
+  section[id], main[id] { scroll-margin-top: 90px; }
+}
+
+/* ===== HU05: TEST RÁPIDO DE SÍNTOMAS ===== */
+/* Lista de casillas: una columna en celular, dos desde 601 px. */
+.lista-sintomas { display: grid; gap: .6rem; margin: 0; padding: 0; border: 0; min-width: 0; }
+.lista-sintomas label { display: flex; align-items: center; gap: .7rem; padding: .7rem .9rem; border: 1px solid #c5d3c9; border-radius: .4rem; background: #fafafa; cursor: pointer; }
+.lista-sintomas input { width: 1.2rem; height: 1.2rem; flex: none; }
+.lista-sintomas label:hover { background: #e4ebe6; }
+@media (min-width: 601px) { .lista-sintomas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Caja del resultado. El color cambia según la clase que pone el JavaScript. */
+.resultado-sintomas { margin-top: 1rem; padding: 1.2rem 1.5rem; background: white; border: 1px solid #c5d3c9; border-left: 10px solid #5f7a68; border-radius: .5rem; }
+.resultado-sintomas.estado-verde { border-left-color: #1e7a3a; background: #e8f5ec; }
+.resultado-sintomas.estado-amarillo { border-left-color: #b58105; background: #fff6d6; }
+.resultado-sintomas.estado-rojo { border-left-color: #b3261e; background: #fdeceb; }
+/* .boton usa display: inline-block y eso anula el atributo hidden; esta regla lo repara. */
+.resultado-sintomas[hidden], #boton-control[hidden] { display: none; }

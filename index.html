@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- PASO 1: permite que el navegador use el ancho real del celular. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio | MyFitnessPal</title>
+  <!-- PASO 2: conectar este HTML con el archivo CSS compartido. -->
+  <link rel="stylesheet" href="css/estilos.css">
+  <!-- Este icono aparece en la pestaña del navegador. -->
+  <link rel="icon" type="image/svg+xml" href="iconos/favicon.svg">
+  <script src="js/test-sintomas.js" defer></script>
+
+</head>
+
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <!-- PASO 3: este header permanece visible con position: sticky en CSS. -->
+  <header class="cabecera">
+    <div class="contenedor barra">
+      <a class="marca" href="index.html"><img src="iconos/favicon.svg" alt="" width="42" height="42">MyFitnessPal</a>
+      <button id="boton-menu" class="boton-menu" type="button" aria-expanded="false" aria-controls="navegacion"
+        aria-label="Abrir menú">
+        <span class="icono-menu" aria-hidden="true"></span><span id="texto-menu">Menú</span>
+      </button>
+      <!-- PASO 4: la lista principal se ordena horizontalmente con Flexbox. -->
+      <nav id="navegacion" aria-label="Navegación principal">
+        <ul class="menu">
+          <li><a href="index.html#inicio">Inicio</a></li>
+          <li><a href="index.html#nosotros">Nosotros</a></li>
+          <li>
+            <!-- details abre el submenú con clic, Enter o toque; no necesita JS. -->
+            <details class="desplegable" id="resolver">
+              <summary>Resolver</summary>
+              <!-- Esta lista es el menú vertical desplegable: una opción por HU. -->
+              <ul class="submenu">
+                <li><a href="index.html#orientador">Semáforo de hierro</a></li>
+                <li><a href="index.html#menus">Menús por presupuesto</a></li>
+                <li><a href="index.html#test-sintomas">Test de síntomas</a></li>
+                  <li><a href="index.html#contacto">Recordatorios</a></li>
+              </ul>
+            </details>
+          </li>
+          <li><a href="recursos.html">Video y guía</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="contenido">
+    <!-- PASO 5: el inicio está en la sección, no en el header sticky. -->
+    <section id="inicio" class="hero contenedor dos-columnas" aria-labelledby="titulo">
+      <div>
+        <p class="etiqueta">Prevención de la anemia ferropénica</p>
+        <h1 id="titulo">Cuida tu hierro,<br>cuida tu salud.</h1>
+        <p>Mucha gente no sabe si come el hierro que necesita. En MyFitnessPal te ayudamos a verlo fácil, recordar tu
+          suplemento y elegir menús que cuesten poco.</p>
+        <a class="boton" href="#orientador">Ver mi semáforo</a>
+        <a class="enlace" href="recursos.html">Conocer la iniciativa</a>
+        <p class="nota">Un caso ficticio para aprender HTML y CSS.</p>
+      </div>
+      <figure class="postal"><img class="foto" src="imagenes/imagenODS3.jpg"
+          alt="Mano sosteniendo un estetoscopio digital con íconos de salud" width="554" height="554">
+        <figcaption>Prevenir hoy es cuidarte mañana.</figcaption>
+      </figure>
+    </section>
+    <section id="nosotros" class="seccion fondo">
+      <div class="contenedor dos-columnas">
+        <img class="foto" src="imagenes/image2s.jpg" alt="Manos sosteniendo un corazón rojo sobre una línea de latidos"
+          width="739" height="415" loading="lazy">
+        <div>
+          <p class="etiqueta">Salud y bienestar</p>
+          <h2>Comer bien también se aprende.</h2>
+          <p>MyFitnessPal es una app móvil para prevenir y controlar la anemia ferropénica. Esta web presenta la idea y
+            deja probar tres acciones de ejemplo.</p>
+          <h3>Nuestra propuesta</h3>
+          <p>Ayudar a estudiantes, madres y familias a seguir su consumo de hierro, no olvidar sus suplementos y comer
+            rico y barato.</p>
+          <p>El proyecto se vincula con el ODS 3: Salud y bienestar.</p>
+        </div>
+      </div>
+    </section>
+    <section id="servicios" class="seccion contenedor">
+      <p class="etiqueta">Un recorrido sencillo</p>
+      <h2>De “no sé” a “voy bien”.</h2>
+      <div class="tarjetas">
+        <article class="tarjeta"><span class="numero">01 / Mira</span>
+          <h3>Revisa tu hierro</h3>
+          <p>Mira en un semáforo si hoy comiste poco, medio o suficiente hierro.</p><a href="#orientador">Ver el
+            semáforo</a>
+        </article>
+        <article class="tarjeta"><span class="numero">02 / Come</span>
+          <h3>Elige un menú</h3>
+          <p>Escoge un menú rico en hierro según lo que puedes gastar.</p><a href="#menus">Ver menús</a>
+        </article>
+        <article class="tarjeta"><span class="numero">03 / Recuerda</span>
+          <h3>Programa un aviso</h3>
+          <p>Pon un recordatorio para tu suplemento o tu control médico.</p><a href="#contacto">Programar aviso</a>
+        </article>
+      </div>
+    </section>
+    <section id="orientador" class="seccion fondo">
+      <div class="contenedor">
+        <p class="etiqueta">HU01 · Semáforo diario de hierro</p>
+        <h2>¿Cómo va tu día?</h2>
+        <p>Elige un caso y mira el semáforo. Son datos de ejemplo: la app real los calcularía con los alimentos que
+          registres.</p>
+        <!-- PASO 7: mismo name, distintos id. Los radios controlan paneles con CSS. -->
+        <fieldset class="orientador">
+          <legend>Consumo de hoy</legend>
+          <input type="radio" name="consumo" id="rojo" checked><label for="rojo">Poco hierro</label>
+          <input type="radio" name="consumo" id="amarillo"><label for="amarillo">Más o menos</label>
+          <input type="radio" name="consumo" id="verde"><label for="verde">Meta cumplida</label>
+          <div class="resultados">
+            <div class="respuesta rojo">
+              <p class="etiqueta">4 mg de 18 mg</p>
+              <h3>Semáforo en rojo</h3>
+              <p>Almorzaste arroz con pollo y te faltan 14 mg. Toca para ver alimentos recomendados.</p>
+            </div>
+            <div class="respuesta amarillo">
+              <p class="etiqueta">12 mg de 18 mg</p>
+              <h3>Semáforo en amarillo</h3>
+              <p>Ya pasaste la mitad de tu meta. Te faltan 6 mg.</p>
+            </div>
+            <div class="respuesta verde">
+              <p class="etiqueta">18 mg de 18 mg</p>
+              <h3>Semáforo en verde</h3>
+              <p>¡Meta cumplida! Hoy comiste el hierro que necesitas.</p>
+            </div>
+            <a class="boton" href="#menus">Ver alimentos recomendados</a>
+          </div>
+        </fieldset>
+        <p class="nota">Valores inventados. No se guardan datos ni se registran alimentos reales.</p>
+      </div>
+    </section>
+    <section id="menus" class="seccion contenedor">
+      <p class="etiqueta">HU03 · Menús con alimentos peruanos accesibles</p>
+      <h2>Un menú rico en hierro que te alcance.</h2>
+      <p>Elige cuánto puedes gastar al día y mira tres menús con su hierro y su costo aproximado.</p>
+      <fieldset class="orientador">
+        <legend>Presupuesto diario</legend>
+        <input type="radio" name="presupuesto" id="p10" checked><label for="p10">S/ 10</label>
+        <input type="radio" name="presupuesto" id="p15"><label for="p15">S/ 15</label>
+        <input type="radio" name="presupuesto" id="p20"><label for="p20">S/ 20</label>
+        <div class="resultados">
+          <div class="respuesta p10">
+            <ul>
+              <li><strong>Lentejas con arroz y ensalada de tomate con limón</strong><br>Hierro: 6 mg · Costo: S/
+                6<br>Ingredientes: lentejas, arroz, tomate, limón. Preparación: cocinar las lentejas y servirlas con
+                arroz.</li>
+              <li><strong>Frejoles con arroz y zarza criolla</strong><br>Hierro: 5 mg · Costo: S/ 7<br>Ingredientes:
+                frejoles, arroz, cebolla, limón. Preparación: guisar los frejoles y servir con la zarza.</li>
+              <li><strong>Tortilla de quinua con ensalada de espinaca</strong><br>Hierro: 4 mg · Costo: S/
+                8<br>Ingredientes: quinua, huevo, espinaca, limón. Preparación: mezclar la quinua con el huevo y freír
+                en sartén.</li>
+            </ul>
+            <p><strong>Consejo de absorción:</strong> acompaña la comida con limón o naranja para absorber mejor el
+              hierro.</p><a class="boton" href="#orientador">Agregar al diario</a>
+          </div>
+          <div class="respuesta p15">
+            <ul>
+              <li><strong>Sangrecita salteada con arroz</strong><br>Hierro: 11 mg · Costo: S/ 12<br>Ingredientes:
+                sangrecita, cebolla, ají panca, arroz. Preparación: saltear la sangrecita con cebolla y ají.</li>
+              <li><strong>Hígado encebollado con arroz y papa</strong><br>Hierro: 9 mg · Costo: S/ 13<br>Ingredientes:
+                hígado, cebolla, arroz, papa. Preparación: dorar el hígado con cebolla a fuego alto.</li>
+              <li><strong>Lentejas con pollo y ensalada de betarraga con naranja</strong><br>Hierro: 7 mg · Costo: S/
+                14<br>Ingredientes: lentejas, pollo, betarraga, naranja. Preparación: cocinar las lentejas con el pollo
+                desmenuzado.</li>
+            </ul>
+            <p><strong>Consejo de absorción:</strong> acompaña la comida con limón o naranja para absorber mejor el
+              hierro.</p><a class="boton" href="#orientador">Agregar al diario</a>
+          </div>
+          <div class="respuesta p20">
+            <ul>
+              <li><strong>Sangrecita con quinua y ensalada con naranja</strong><br>Hierro: 12 mg · Costo: S/
+                16<br>Ingredientes: sangrecita, quinua, tomate, naranja. Preparación: saltear la sangrecita y servir
+                sobre la quinua.</li>
+              <li><strong>Hígado a la plancha con quinua y ensalada con limón</strong><br>Hierro: 10 mg · Costo: S/
+                18<br>Ingredientes: hígado, quinua, tomate, limón. Preparación: cocinar el hígado a la plancha con poco
+                aceite.</li>
+              <li><strong>Pallares con bonito y arroz</strong><br>Hierro: 6 mg · Costo: S/ 19<br>Ingredientes: pallares,
+                bonito, arroz, ají amarillo. Preparación: guisar los pallares y agregar el bonito en trozos.</li>
+            </ul>
+            <p><strong>Consejo de absorción:</strong> acompaña la comida con limón o naranja para absorber mejor el
+              hierro.</p><a class="boton" href="#orientador">Agregar al diario</a>
+          </div>
+        </div>
+      </fieldset>
+      <p class="nota">Hierro y costos aproximados, inventados para la demostración. “Agregar al diario” te lleva al
+        semáforo: en la app real el hierro se sumaría solo.</p>
+    </section>
+    <section id="galeria" class="seccion fondo">
+      <div class="contenedor">
+        <h2>Pequeños hábitos, gran bienestar.</h2>
+        <div class="galeria">
+          <figure><img src="imagenes/imagenODS3.jpg" alt="Estetoscopio digital con íconos de salud" width="554"
+              height="554" loading="lazy">
+            <figcaption>La salud empieza por prevenir</figcaption>
+          </figure>
+          <figure><img src="imagenes/image2s.jpg" alt="Manos cuidando un corazón rojo" width="739" height="415"
+              loading="lazy">
+            <figcaption>Cuidarte es un hábito diario</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+    <section id="testimonios" class="seccion contenedor">
+      <blockquote>“Con el aviso de las 8 a. m. ya no se me olvida el suplemento de mi hijo”.</blockquote>
+      <p>Relato ficticio para representar la necesidad del usuario.</p>
+    </section>
+    <!-- HU05: Test rápido de síntomas. Lo controla js/test-sintomas.js -->
+    <section id="test-sintomas" class="seccion contenedor" aria-labelledby="titulo-test">
+      <p class="etiqueta">HU05 · Test rápido de síntomas</p>
+      <h2 id="titulo-test">¿Te sientes cansado o cansada?</h2>
+      <p>Marca los síntomas que sientes y mira el resultado. Es un ejemplo y no reemplaza a un médico.</p>
+      <form id="form-sintomas" class="formulario" novalidate>
+        <fieldset class="lista-sintomas">
+          <legend>Marca lo que sientes</legend>
+          <label><input type="checkbox" name="sintoma" value="cansancio"> Cansancio</label>
+          <label><input type="checkbox" name="sintoma" value="mareos"> Mareos</label>
+          <label><input type="checkbox" name="sintoma" value="palidez"> Palidez</label>
+          <label><input type="checkbox" name="sintoma" value="unas"> Uñas quebradizas</label>
+          <label><input type="checkbox" name="sintoma" value="dolor-cabeza"> Dolor de cabeza</label>
+        </fieldset>
+        <button type="submit" class="boton">Ver resultado</button>
+      </form>
+      <!-- Empieza oculto (hidden). El JavaScript lo muestra al pulsar "Ver resultado". -->
+      <div id="resultado-sintomas" class="resultado-sintomas" role="status" aria-live="polite" hidden>
+        <p id="conteo-sintomas" class="etiqueta"></p>
+        <h3 id="titulo-resultado"></h3>
+        <p id="mensaje-resultado"></p>
+        <a id="boton-control" class="boton" href="#contacto" hidden>Programar control</a>
+      </div>
+      <p class="nota">Datos de ejemplo. No se guarda ninguna respuesta.</p>
+    </section>
+    <section id="contacto" class="seccion fondo">
+      <div class="contenedor dos-columnas">
+        <div>
+          <p class="etiqueta">HU02 · Recordatorios de suplemento y controles médicos</p>
+          <h2>Programa tu recordatorio.</h2>
+          <p>Completa datos ficticios para probar: elige qué quieres recordar, cada cuánto y a qué hora. En la app real
+            te llegaría un aviso con “Ya lo tomé” y “Recordar en 30 minutos”.</p>
+          <p class="nota">Esta práctica no guarda datos ni envía avisos. No ingreses información personal real.</p>
+        </div>
+        <!-- PASO 8: required valida campos. Sin name: no añadimos datos a la URL. -->
+        <form action="confirmacion.html" method="get" class="formulario">
+          <label for="nombre">Nombre de prueba</label><input id="nombre" type="text" required maxlength="60"
+            placeholder="Ejemplo: Ana" autocomplete="off">
+          <label for="correo">Correo de prueba</label><input id="correo" type="email" required
+            placeholder="ana@example.com" autocomplete="off">
+          <label for="tipo">¿Qué quieres recordar?</label><select id="tipo" required>
+            <option value="">Selecciona una opción</option>
+            <option>Suplemento de hierro</option>
+            <option>Control de hemoglobina</option>
+          </select>
+          <label for="frecuencia">¿Cada cuánto?</label><select id="frecuencia" required>
+            <option value="">Selecciona una opción</option>
+            <option>Todos los días</option>
+            <option>Cada semana</option>
+            <option>Cada mes</option>
+          </select>
+          <label for="hora">¿A qué hora?</label><select id="hora" required>
+            <option value="">Selecciona una hora</option>
+            <option>8:00 a. m.</option>
+            <option>12:00 m.</option>
+            <option>8:00 p. m.</option>
+          </select>
+          <div><input id="acepto" type="checkbox" required> <label for="acepto">Entiendo que es una simulación.</label>
+          </div>
+          <button type="submit" class="boton">Programar recordatorio</button>
+        </form>
+      </div>
+    </section>
+  </main>
+  <!-- PASO FINAL: pie compartido por las páginas del sitio. -->
+  <footer class="pie">
+    <div class="contenedor">
+      <img class="ods" src="imagenes/S_SDG-goals_icons-individual-rgb-03.png"
+        alt="Objetivo de Desarrollo Sostenible 3: Salud y bienestar" width="90" height="90">
+      <p><strong>MyFitnessPal</strong> · Prevención y control de la anemia ferropénica</p>
+      <p>Contacto de ejemplo: hola@ejemplo.org</p>
+      <nav class="redes" aria-label="Redes sociales de referencia">
+        <!-- Son páginas generales de las redes; reemplazar por cuentas del proyecto. -->
+        <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer"><img src="iconos/facebook.svg"
+            alt="" width="24" height="24">Facebook</a>
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer"><img src="iconos/instagram.svg"
+            alt="" width="24" height="24">Instagram</a>
+        <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer"><img src="iconos/youtube.svg"
+            alt="" width="24" height="24">YouTube</a>
+      </nav>
+      <p>© 2026 MyFitnessPal · Ejemplo educativo ficticio · <a href="FUENTES.txt">Créditos de recursos</a></p>
+    </div>
+  </footer>
+   <script src="js/menu.js"></script>
+</body>
+
+</html>

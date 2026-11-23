@@ -1,0 +1,13 @@
+MyFitnessPal — Prevención y control de la anemia ferropénica
+Caso académico ficticio. Vinculación con el ODS 3: Salud y bienestar.
+No hay registro real de alimentos, notificaciones ni orientación médica. Los valores de hierro y costos son de ejemplo.
+Imágenes: imagenODS3.jpg (estetoscopio digital) e image2s.jpg (corazón en manos). Reemplazar por la fuente real y su crédito.
+Logos del ODS 3 (S_SDG-goals_icons-individual-rgb-03.png, images.png): Naciones Unidas, https://www.un.org/sustainabledevelopment/
+Iconos Facebook, Instagram y YouTube: Simple Icons v15 (CDN jsDelivr).
+https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md
+Las marcas pertenecen a sus titulares; no implican afiliación.
+Favicon MyFitnessPal: SVG original para esta actividad.
+Video de referencia: UNESCO en español. Los Objetivos de Desarrollo Sostenible qué son y cómo alcanzarlos.
+https://www.youtube.com/watch?v=MCKH5xk8X-g
+El video se inserta desde YouTube; no se descarga ni se redistribuye.
+Los enlaces de redes sociales llevan a páginas generales; reemplazar por las del proyecto.
